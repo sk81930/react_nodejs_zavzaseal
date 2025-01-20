@@ -1,0 +1,109 @@
+.call-filters-main{
+  padding: 10px;
+  .call-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .filter-dropdown {
+      width: 150px;
+    }
+
+    .filter-input {
+      height: 38px;
+      padding: 5px 10px;
+      border: 1px solid #d9d9d9;
+      border-radius: 5px;
+      font-size: 14px;
+      width: 269px;
+      cursor: pointer;
+    }
+
+    .date-input-wrapper {
+      position: relative;
+
+      .date-picker-popup {
+        position: absolute;
+        top: 45px;
+        left: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .button-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .icon-button {
+        background-color: #eaf4ff;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .apply-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+    .view_chart {
+        cursor: pointer;
+        background: #28a8e2;
+        height: 35.67px;
+        border-radius: 5px;
+        width: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 23px;
+            filter: brightness(0) invert(1);
+        }
+    }
+  }
+
+}  
+.rdt_TableCell {
+  padding: 10px;
+  div {
+      overflow-wrap: break-word;
+      white-space: normal !important;
+      line-height: 24px;
+  }
+}
+.rdt_TableCol_Sortable {
+  div {
+      overflow-wrap: break-word;
+      white-space: normal !important;
+      line-height: 24px;
+  }
+}
+.chartdata1-label {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 20%;
+    margin-top: 33px;
+    gap: 16px;
+}
+

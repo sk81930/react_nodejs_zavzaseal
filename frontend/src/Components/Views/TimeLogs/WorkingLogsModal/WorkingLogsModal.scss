@@ -1,0 +1,55 @@
+.modal{
+	background: #3835356b;
+}
+.WorkingLogsModal{
+   .modal-content{
+        background-color: #f2f5f8;
+          .timelog_tab {
+	          ul {
+			    justify-content: flex-end;
+			}
+          }
+
+          .tab_wrap .nav-tabs .nav-link.active, .timelog_tab .nav-tabs .nav-link.active {
+              border: none;
+		    border-bottom: 2px solid #28a8e2;
+		    color: #28a8e2;
+		}
+		table {
+		     thead {
+
+		         
+
+			     tr {
+				     background-color: #f2f5f8;
+				     th {
+			             background: transparent;
+			             font-weight: 600;
+			             color: #564f4f;
+			          }
+				}
+		     }
+		     tbody{
+		     	 tr{
+		     	 	  cursor: pointer;
+		     	 }
+		       td{
+		         min-height: 50px;
+		         color: #564f4f;
+		       }
+		     }
+
+		}
+   }
+     
+	
+}
+.MuiDateRangeCalendar-root div:nth-of-type(0){
+	display: none;
+}
+*, :after, :before {
+    border-color: #c9e9f8;
+    border-style: solid;
+    border-width: 0;
+    box-sizing: border-box;
+}

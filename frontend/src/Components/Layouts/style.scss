@@ -1,0 +1,245 @@
+
+:root {
+    --font-family: var(--mdb-font-roboto);
+    --sidebar-width: 230px;
+    --collapsed-sidebar-width: 4.5rem;
+    --default-theme-mode: system;
+    --font-size: 15px;
+}
+:root, [data-mdb-theme=light] {
+    --mdb-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --mdb-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --mdb-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+    --mdb-body-font-family: var(--mdb-font-roboto);
+    --mdb-body-font-size: 1rem;
+    --mdb-body-font-weight: 400;
+    --mdb-body-line-height: 1.6;
+    --mdb-body-color: #4f4f4f;
+    --mdb-body-color-rgb: 79, 79, 79;
+    --mdb-body-bg: #fff;
+    --mdb-body-bg-rgb: 255, 255, 255;
+    --mdb-emphasis-color: #000;
+    --mdb-emphasis-color-rgb: 0, 0, 0;
+    --mdb-secondary-color: rgba(79, 79, 79, 0.75);
+    --mdb-secondary-color-rgb: 79, 79, 79;
+    --mdb-secondary-bg: #eeeeee;
+    --mdb-secondary-bg-rgb: 238, 238, 238;
+    --mdb-tertiary-color: rgba(79, 79, 79, 0.5);
+    --mdb-tertiary-color-rgb: 79, 79, 79;
+    --mdb-tertiary-bg: #fbfbfb;
+    --mdb-tertiary-bg-rgb: 251, 251, 251;
+    --mdb-heading-color: inherit;
+    --mdb-link-color: #3b71ca;
+    --mdb-link-color-rgb: 59, 113, 202;
+    --mdb-link-decoration: none;
+    --mdb-link-hover-color: #386bc0;
+    --mdb-link-hover-color-rgb: 56, 107, 192;
+    --mdb-link-hover-decoration: none;
+    --mdb-code-color: #e91e63;
+    --mdb-highlight-color: #4f4f4f;
+    --mdb-highlight-bg: #fff9c4;
+    --mdb-border-width: 1px;
+    --mdb-border-style: solid;
+    --mdb-border-color: #e0e0e0;
+    --mdb-border-color-translucent: rgba(0, 0, 0, 0.175);
+    --mdb-border-radius: 0.25rem;
+    --mdb-border-radius-sm: 0.25rem;
+    --mdb-border-radius-lg: 0.5rem;
+    --mdb-border-radius-xl: 1rem;
+    --mdb-border-radius-xxl: 2rem;
+    --mdb-border-radius-2xl: var(--mdb-border-radius-xxl);
+    --mdb-border-radius-pill: 50rem;
+    --mdb-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --mdb-box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --mdb-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    --mdb-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    --mdb-focus-ring-width: 0.25rem;
+    --mdb-focus-ring-opacity: 0.25;
+    --mdb-focus-ring-color: rgba(59, 113, 202, 0.25);
+    --mdb-form-valid-color: #14a44d;
+    --mdb-form-valid-border-color: #14a44d;
+    --mdb-form-invalid-color: #dc4c64;
+    --mdb-form-invalid-border-color: #dc4c64;
+}
+* {
+  font-size: var(--font-size); 
+}
+body{
+  background: #f7f7f7;
+  margin: 0;
+  font-family: var(--mdb-body-font-family);
+  font-size: var(--mdb-body-font-size);
+  font-weight: var(--mdb-body-font-weight);
+  line-height: var(--mdb-body-line-height);
+  color: var(--mdb-body-color);
+  text-align: var(--mdb-body-text-align);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+input{
+    border: 1px solid #ccc;
+}
+.font-normal {
+    font-weight: 400;
+}
+.font-semibold {
+    font-weight: 600;
+}
+.text-sm {
+    font-size: .975rem;
+    line-height: 1.25rem;
+}
+.text-body {
+    --mdb-text-opacity: 1;
+    color: rgba(var(--mdb-body-color-rgb), var(--mdb-text-opacity)) !important;
+}
+.btn-secondary {
+    color: #fff;
+    background: #a9a5a5;
+}
+.font-bold {
+    font-weight: 700;
+}
+.text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+.btn-primary{
+  background: #2497cb;
+  &:hover{
+     background: #2497cb;
+  }
+  &:active{
+     background: #2497cb;
+  }
+}
+.w-11{
+  width:11px;
+}
+.swal2-confirm{
+  background: #2497cb;
+}
+header{
+    .nav-link{
+        padding: 15px 16px;
+        span {
+            font-size: 13px;
+        }
+        svg{
+            margin-right: 0.7rem
+        }
+    }
+    .nav-link.active {
+      background: #eaf6fc;
+      border-radius: 4px;
+      svg{
+        fill: #2497cb;
+      }
+      span{
+        color: #2497cb;
+      }
+    }
+    .collapse {
+        .nav-link {
+            padding: 12px 16px;
+        }
+    }
+
+}
+
+.rdt_TableCol {
+    font-weight: 800;
+}
+
+.justify-content-space-between{
+  justify-content: space-between;
+}
+.MuiDatePickerToolbar-root, .MuiTimePickerToolbar-root, .MuiDateTimePickerToolbar-root  {
+    background: #2497cb;
+    color: #fff;
+    span, .Mui-selected {
+      color: #fff !important;
+    }
+}
+.MuiDayCalendar-weekContainer .Mui-selected {
+    color: #fff;
+    background-color: #2497cb !important;
+}
+
+.dashboard {
+  .inner_img {
+      width: 53px;
+      height: 53px;
+      background: #D5F2FF;
+  }
+  .tab_wrap .nav-tabs .nav-link.active, .timelog_tab .nav-tabs .nav-link.active {
+      border: none;
+      border-bottom: 2px solid #28a8e2;
+      color: #28a8e2 !important;
+  }
+  .nav-tabs{
+    .nav-item {
+        flex-grow: 1;
+        flex-basis: 0;
+        button{
+          width: 100%;
+          font-weight: bolder;
+          border: none;
+        }
+
+    }
+    .nav-link:hover {
+        background-color: #eee;
+        color: #0000008c;
+    }
+  }
+  .home_wrapper{
+    p{
+      font-size: 16px;
+    }
+  }
+  .header_wrap {
+      border-bottom: 1px solid #D9D9D9;
+  }
+  .side_content {
+       padding: 47px 0px;
+  }
+
+}
+
+.profile-image-span{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2497cb;
+    color: #fff;
+    cursor: pointer;
+    span{
+        font-size: 20px;
+    }
+}
+.profile-top:after{
+    display: none;
+}
+
+.loader-main {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: #c7c6c699;
+    z-index: 999999999;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1180px;
+    }
+}
+@media (min-width: 1400px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1400px;
+    }
+}

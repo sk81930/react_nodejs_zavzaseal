@@ -1,0 +1,9 @@
+.create_user{
+	.image-container {
+	   &:hover {
+	      .removePr {
+	        display: block !important;
+	      }
+	   }
+	}
+}

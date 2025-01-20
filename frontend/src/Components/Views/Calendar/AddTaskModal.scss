@@ -1,0 +1,74 @@
+.modal-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .button-group {
+    display: flex;
+    gap: 1rem;
+
+    .option-btn {
+        flex: 1 1;
+        padding: 1rem;
+        text-align: center;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        width: 320.5px;
+        min-height: 98px !important;
+        border: 2px solid #BDBDBD;
+        border-radius: 4px;
+        background: transparent;
+        color: #000;
+
+      &.active {
+        background-color: #d7deeb;
+        color: #000;
+        border: 2px solid #28A8E2;
+      }
+
+      &:hover {
+        background-color: #d7deeb;
+        color: #000;
+        border: 2px solid #28A8E2;
+      }
+    }
+  }
+
+  .date-time-group {
+    display: flex;
+    justify-content: space-between;
+
+    & > div {
+      flex: 1;
+      margin-right: 0.5rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .add-product-btn {
+    width: 100%;
+    text-align: left;
+    color: #007bff;
+    background: none;
+    border: none;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.modal-footer {
+  justify-content: flex-start;
+  border-top: none;
+  .btn{
+      width: 140px;
+      max-width: 100%;
+      min-height: 37px;
+      font-size: 13px;
+      border: none;
+  }
+}

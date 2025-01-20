@@ -1,0 +1,64 @@
+.modal{
+	background: #3835356b;
+}
+.profileContainer{
+	width: 75%;
+	left: 25%;
+   .modal-content{
+        background-color: #f2f5f8;
+        .left_inner_wrap{
+        	min-height: 400px;
+	        .admin_name {
+			    background: #28a8e2;
+			    font-size: 0.75rem;
+			    font-weight: 500;
+			    top: 5px;
+			    width: max-content;
+			    &:before {
+				    content: '';
+				    width: 0;
+				    height: 0;
+				    border-top: 12px solid #28a8e2;
+				    border-left: 12px solid #c10c0c00;
+				    position: absolute;
+				    right: -11px;
+				    top: 0px;
+				    transform: rotate(-91deg);
+				}
+				&:after {
+				    content: '';
+				    width: 0;
+				    height: 0;
+				    border-bottom: 13px solid #28a8e2;
+				    border-left: 12px solid transparent;
+				    position: absolute;
+				    bottom: 0px;
+				    right: -12px;
+				    transform: rotate(88deg);
+				}
+			}
+			.img-div{
+
+				width: 100%;
+				justify-content: center;
+                display: flex;
+
+				.img{
+					border-radius: 50% !important;
+					margin-top: 3rem !important;
+				}
+
+			}
+			
+		}	
+		.right_inner_wrap{
+			h3{
+				font-weight: 700;
+			}
+			b,p{
+				color: #757575;
+			}
+		}
+   }
+	
+}

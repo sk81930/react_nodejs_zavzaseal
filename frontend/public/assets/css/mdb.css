@@ -1,0 +1,20 @@
+body {
+  background-color: hsl(0, 0%, 97%);
+}
+
+@media (min-width: 1400px) {
+  main,
+  header,
+  #main-navbar {
+    padding-left: 240px;
+  }
+  .sidenav-btn-cst {
+      display: none !important;
+  }
+}
+
+@media (max: 1200px) {
+  .sidenav-btn-cst{
+    display: block;
+  }
+}

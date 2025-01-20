@@ -1,0 +1,45 @@
+export const APP_LOAD = "APP_LOAD";
+export const LOAD_APP_LOAD = "LOAD_APP_LOAD";
+export const REDIRECT = "REDIRECT";
+export const LOGIN = "LOGIN";
+export const CLEAR_LOGIN_MESSAGE = "CLEAR_LOGIN_MESSAGE";
+export const FORGOT_PASSWORD = "FORGOT_PASSWORD";
+export const RESET_PASSWORD = "RESET_PASSWORD";
+export const LOGOUT = "LOGOUT";
+export const CLEAR_LOGOUT = "CLEAR_LOGOUT";
+export const REGISTER = "REGISTER";
+export const LOGIN_PAGE_UNLOADED = "LOGIN_PAGE_UNLOADED";
+export const REGISTER_PAGE_UNLOADED = "REGISTER_PAGE_UNLOADED";
+export const ASYNC_START = "ASYNC_START";
+export const ASYNC_END = "ASYNC_END";
+export const CURRENT_VIEW = "CURRENT_VIEW";
+export const UPDATE_FIELD_AUTH = "UPDATE_FIELD_AUTH";
+export const ROLES = "ROLES";
+export const USERS = "USERS";
+export const GET_USER_BY_ID = "GET_USER_BY_ID";
+export const DELETE_USER = "DELETE_USER";
+export const CREATE_USER = "CREATE_USER";
+export const SETTINGS = "SETTINGS";
+export const SAVE_SETTINGS = "SAVE_SETTINGS";
+export const CLEAR_FLASH_MESSAGE = "CLEAR_FLASH_MESSAGE";
+
+export const CALL_LOGS = "CALL_LOGS";
+export const CALL_LOGS_CHART_DATA_FIRST = "CALL_LOGS_CHART_DATA_FIRST";
+export const CALL_LOGS_CHART_DATA_SECOND = "CALL_LOGS_CHART_DATA_SECOND";
+export const CALL_LOGS_TOKEN = "CALL_LOGS_TOKEN";
+
+export const GET_DEALS = "GET_DEALS";
+
+export const GET_CREW_MEMBER = "GET_CREW_MEMBER";
+
+export const GET_TASKS = "GET_TASKS";
+export const ADD_TASK = "ADD_TASK";
+
+export const OPEN_PROFILE_MODAL = 'OPEN_PROFILE_MODAL';
+export const CLOSE_PROFILE_MODAL = 'CLOSE_PROFILE_MODAL';
+
+export const LOADER_SHOW = 'LOADER_SHOW';
+export const LOADER_HIDE = 'LOADER_HIDE';
+
+
+

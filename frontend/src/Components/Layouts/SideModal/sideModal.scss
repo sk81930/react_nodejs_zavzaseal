@@ -1,0 +1,79 @@
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.side-modal {
+  animation: slideInFromRight 0.5s ease-out forwards;
+  width: 85%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  left: 15%;
+  height: 100%;
+
+  .modal-content {
+    border: none;
+    border-radius: unset;
+    min-height: 100%;
+    .modal-body {
+      padding: 0;
+      overflow: auto;
+    }
+
+  }
+
+  .modal-header {
+    position: absolute;
+    left: -59px;
+    top: 11px;
+    transform: rotate(-90deg);
+    margin-bottom: 10px !important;
+    border-radius: 40px 40px 0px 0px;
+    background: #28a8e2;
+    padding: 9px 0px !important;
+    width: 52px;
+    align-items: center;
+    z-index: 1;
+
+    button {
+      margin: 0;
+      color: #fff !important;
+    }
+  }
+
+  &.closing {
+    animation: slideOutToRight 0.5s ease-out forwards;
+  }
+  .modal-backdrop {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
