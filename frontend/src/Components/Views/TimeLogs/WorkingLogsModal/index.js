@@ -125,7 +125,7 @@ const WorkingLogsModal = ({isOpen, setIsOpen,onHide, setOnHide, logsUserId, hand
       <SideModal isOpen={isOpen} setIsOpen={setIsOpen} onHide={onHide} setOnHide={setOnHide} showButton={false}   classDef="WorkingLogsModal" >
          
            <Fragment>
-              <div className="px-3 py-3">
+              <div className="px-2 py-3">
                 <MDBRow className="m-0 d-flex align-items-start">
                   <MDBCol size="12" className="p-0 bg-white rounded-3 shadow-md px-3 py-3">
                     <div className="modal-headers d-flex flex-column">

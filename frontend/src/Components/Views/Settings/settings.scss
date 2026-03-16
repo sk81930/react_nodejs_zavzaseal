@@ -1,0 +1,17 @@
+.setting_wrap{
+	.card-body{
+		form{
+			.form-outline{
+				box-shadow:none;
+				padding:13.96px 15px;
+				textarea{
+					padding:0px;
+					font-size:14px !important;
+				}
+			}
+			.btn{
+				text-transform:uppercase;
+			}
+		} 
+	}
+}

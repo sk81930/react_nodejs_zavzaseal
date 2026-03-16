@@ -20,6 +20,10 @@ import {
   CALL_LOGS_CHART_DATA_FIRST,
   CALL_LOGS_CHART_DATA_SECOND,
   CALL_LOGS_TOKEN,
+  REPORTS,
+  REPORTS_CHART_DATA_FIRST,
+  REPORTS_CHART_DATA_SECOND,
+  REPORTS_TOKEN,
   GET_DEALS,
   GET_CREW_MEMBER,
   ADD_TASK,
@@ -27,9 +31,17 @@ import {
   CLOSE_PROFILE_MODAL,
   LOADER_SHOW,
   LOADER_HIDE,
+  WEBSITE_DATA,
+  WEBSITE_DATA_CHART,
 } from '../constants/actionTypes';
 
-export default (state = {}, action) => {
+export default (state = {
+  reports: null,
+  reportsError: null,
+  reportsChartData1: null,
+  reportsChartData2: null,
+  reportsToken: null,
+}, action) => {
   switch (action.type) {
     case APP_LOAD:
 
@@ -132,6 +144,31 @@ export default (state = {}, action) => {
         callLogsChartData2: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.chartData? action.payload.data.chartData: null, 
       };
     }   
+  case REPORTS:{
+      return {
+        ...state,
+        reportsError: action.error && action.payload.isSuccess === false ? action.payload.message: null, 
+        reports: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.reports? action.payload.data.reports: null, 
+      };
+    }  
+  case REPORTS_CHART_DATA_FIRST:{
+      return {
+        ...state,
+        reportsChartData1: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.chartData? action.payload.data.chartData: null, 
+      };
+    } 
+  case REPORTS_CHART_DATA_SECOND:{
+      return {
+        ...state,
+        reportsChartData2: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.chartData? action.payload.data.chartData: null, 
+      };
+    }   
+  case REPORTS_TOKEN:{
+      return {
+        ...state,
+        reportsToken: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.token? action.payload.data.token: null, 
+      };
+    }  
   case GET_DEALS:{
       return {
         ...state,
@@ -144,13 +181,22 @@ export default (state = {}, action) => {
         crewMembers: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.crewMembers? action.payload.data.crewMembers: null, 
       };
     }  
-  case ADD_TASK:{
-      return {
-        ...state,
-        addTaskError: action.error && action.payload.isSuccess === false ? action.payload.message: null, 
-        addTaskSuccess: action.payload && action.payload.isSuccess && action.payload.message ? action.payload.message: null, 
-      };
-    }  
+  case ADD_TASK: {
+    return {
+      ...state,
+  
+      addTaskError:
+        action.payload && action.payload.isSuccess === false
+          ? action.payload.message
+          : null,
+  
+      // STORE FULL RESPONSE
+      addTaskSuccess:
+        action.payload && action.payload.isSuccess
+          ? action.payload
+          : null,
+    };
+  } 
   case OPEN_PROFILE_MODAL:{
     var ModalUserId = null;
     if(action.payload && action.payload.userId){
@@ -200,6 +246,19 @@ export default (state = {}, action) => {
             addTaskError: null,
             addTaskSuccess: null,
         }; 
+    case WEBSITE_DATA: {
+      return {
+        ...state,
+        websiteDataError: action.error && action.payload.isSuccess === false ? action.payload.message : null,
+        websiteData: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.websiteData ? action.payload.data.websiteData : null,
+      };
+    }
+    case WEBSITE_DATA_CHART: {
+      return {
+        ...state,
+        websiteChartData: action.payload && action.payload.isSuccess && action.payload.data && action.payload.data.chartData ? action.payload.data.chartData : null,
+      };
+    }
     default:
       return state;
   }

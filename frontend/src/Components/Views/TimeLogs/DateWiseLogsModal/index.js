@@ -84,16 +84,16 @@ const DateWiseLogsModal = ({isOpenDateWise, setIsOpenDateWise,onHideDateWise, se
  
   return (
     <>
-      <SideModal isOpen={isOpenDateWise} setIsOpen={setIsOpenDateWise} onHide={onHideDateWise} setOnHide={setOnHideDateWise} showButton={false}  classDef="DateWiseLogsModal" >
+      <SideModal isOpen={isOpenDateWise} setIsOpen={setIsOpenDateWise} onHide={onHideDateWise} setOnHide={setOnHideDateWise} showButton={false}  classDef="DateWiseLogsModal WorkingLogsModal" >
          
            <Fragment>
-              <div className="px-3 py-3">
+              <div className="px-2 py-3">
                 <MDBRow className="m-0 d-flex align-items-start">
                   <MDBCol size="12" className="p-0 bg-white rounded-3 shadow-md px-3 py-3">
                     <div className="modal-headers d-flex flex-column">
                       <div className="pb-2 mb-3 d-flex justify-content-between align-items-center flex-wrap">
                           {(userData && userData.first_name) && (
-                            <div className="d-flex align-items-center pt-3 pb-0 user-top">
+                            <div className="d-flex align-items-center pt-0 pb-0 user-top">
                                 <div className="user_img">
                                     {(userData && userData.profile_image) ? (
                                       <img  

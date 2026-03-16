@@ -1,0 +1,265 @@
+﻿.dashboard-mdb {   
+  * {
+    font-family: var(--font-family);
+  }  
+  .ongoing-table {
+    th{
+      font-weight: 700;      
+      font-size: 12px;
+      color: #181819;
+      padding:16px 20px;
+    }
+    td{
+      font-weight: 400;
+      font-size: 12px;
+      color: #181819;    
+      padding:16px 15px;
+    }
+  }
+
+  .recent-link {
+    font-weight: 400;
+    font-style: Italic;
+    font-size: 12px;
+    text-decoration: underline !important;
+    color: #2EA7DF;
+  }
+  .btn-group {
+      border: 1px solid #ddd;
+      box-shadow: none;
+      border-radius: 8px;
+      padding: 4px 10px;
+      button {
+          font-size: 12px;
+          color: #646464;
+      }
+      .dropdown-item {
+        font-size: 12px;
+        font-weight: 400 !important;
+        color: #646464;
+      }
+  }
+
+	.date-range-menu {
+		min-width: 280px;
+	}
+
+	.card {
+		border: 1px solid #f8f9fb;
+		border-radius: 8px;
+		background: #f8f9fb;
+		box-shadow: 0px 2px 2.4px 0px #103a4e17;	
+    .card-body {padding:20px;}  
+	}
+	
+  .date-range-card {
+    border: 2px solid #F8F9FC;
+    background: transparent;
+    box-shadow: none;
+    margin-bottom: 30px !important;
+
+    .dropdown span, p {
+      font-size: 14px; 
+      color: #000;
+    }
+    .ripple {font-size: 12px;}
+  }
+  .btn-export-table {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  } 
+
+  .summary-card {
+    .summary-title {
+		font-size: 16px;
+		color: #04161f;
+		margin-bottom: 25px !important;
+      > span {
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 120%;
+        color: #04161f;
+      }
+    }
+
+    .summary-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: #eef7fd;
+      color: #2ca8e2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h4 {
+		color: #04161f;
+		font-family: var(--font-family) !important;
+		line-height: 120%;
+		font-size: 20px;
+		margin-bottom: 12px !important;
+    }
+
+    .summary-note {
+		font-family: var(--font-family) !important;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 120%;
+
+		.green {
+			color: #0fa801;
+		}
+
+		.mute {
+			color: #646464;
+		}
+    }
+  }
+
+  .bar-wrap {
+    height: 180px;
+  }
+
+  .funnel-row {
+    .funnel-track {
+      height: 7px;
+      background: #edf3f9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .funnel-fill {
+      display: block;
+      height: 100%;
+      background: #2ca8e2;
+      border-radius: 999px;
+    }
+  }
+
+  .donut-wrap {
+    width: 140px;
+    height: 140px;
+    flex: 0 0 140px;
+  }
+
+  .lead-source-list {
+    width: 100%;
+
+    .source-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      .green {
+        color:#0FA801;
+      }
+      .source-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+      }
+
+      strong {
+        color: #1f2a37;
+      }
+    }
+  }
+
+  .activity-row {
+    .green {
+      color:#0FA801;
+    }
+    font-size: 12px;    
+    padding: 0;
+
+    p {
+      color: #2f3a47;
+      margin-bottom: 2px;
+    }
+
+    small {
+      color: #7f8894;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    text-transform: lowercase;
+
+    &.ongoing {
+      background: #fff;
+      color: #0FA801;
+      border: 1px solid #0FA801;
+    }
+
+    &.completed {
+      background: #2EA7DF;
+      color: #fff;
+      border: 1px solid #2EA7DF;
+    }
+  }
+
+  .table-footer {
+    margin-top: 8px;
+
+    small {
+      color: #8a93a0;
+    }
+
+    .pagination-chip {      
+      border: 1px solid #DDD;
+      padding:4px;
+      display: inline-flex;
+      gap: 4px;
+      border-radius: 8px;
+
+      button {
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border:0;
+        border-radius: 0px;
+        font-size: 12px;
+        color: #000000B2;
+        background: transparent;
+        padding: 0;
+        line-height: 1;
+        &.page-count {
+          border-left: 1px solid #DDD;
+          &:not(:first-child) {
+            border-right: 1px solid #DDD;
+          }
+        }
+        &:disabled {
+          cursor: not-allowed;
+          border:0;
+          color:#ddd;
+        }
+      }
+
+      button.active {
+        color: #2ca8e2;
+      }
+    }
+  }
+
+  .dashboard-footer {
+    font-size: 12px;
+    color: #9aa2ad;
+    padding: 4px 2px 8px;
+  }
+}

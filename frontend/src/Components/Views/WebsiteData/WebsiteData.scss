@@ -1,0 +1,218 @@
+.website-data-container {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  margin: 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  min-height: calc(100vh - 64px);
+
+  .success-message,
+  .error-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .success-message {
+    background-color: #e6f9ed;
+    color: #1a7f37;
+    border: 1px solid #a3e4b7;
+  }
+
+  .error-message {
+    background-color: #fde8e8;
+    color: #c81e1e;
+    border: 1px solid #f8b4b4;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .website-data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+
+    .website-data-search {
+      border: 1px solid #28a8e2;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      min-width: 280px;
+      background: #fff;
+      margin-right: 16px;
+      cursor: pointer;
+
+      &:focus {
+        border-color: #3b71ca;
+      }
+
+      &:focus-visible {
+        border-color: #3b71ca;
+        outline: 1px solid #3b71ca;
+      }
+    }
+
+    .website-data-filters {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .website-data-select {
+        min-width: 180px;
+        font-size: 15px;
+        color: #4f4f4f !important;
+
+        .css-1dimb5e-singleValue {
+          color: #4f4f4f;
+        }
+      }
+
+      .website-data-datepicker-wrapper {
+        position: relative;
+        display: inline-block;
+
+        .website-data-datepicker {
+          border: 1px solid #28a8e2;
+          border-radius: 5px;
+          padding: 10px 16px;
+          padding-right: 40px;
+          font-size: 14px;
+          background: #fff;
+          min-width: 220px;
+          cursor: pointer;
+
+          &:focus {
+            border-color: #3b71ca;
+          }
+
+          &:focus-visible {
+            border-color: #3b71ca;
+            outline: 1px solid #3b71ca;
+          }
+        }
+
+        .calendar-icon {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  .website-data-table-wrapper {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    overflow: auto;
+    width: 100%;
+
+    .website-data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+
+      th, td {
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .no-data-row {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        color: #666;
+        padding: 20px;
+      }
+
+      th {
+        background: #f3f4f6;
+        font-weight: 600;
+        border-bottom: 1.5px solid #e5e7eb;
+      }
+
+      tbody {
+        tr:not(.grand-total-row) {
+          border-bottom: 1px solid #f1f1f1;
+          background: #fff;
+          transition: background 0.2s;
+
+          &:hover {
+            background: #f9fafb;
+          }
+        }
+      }
+
+      .website-logo-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .website-logo {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+          border-radius: 50%;
+          background: #f3f4f6;
+          border: 1px solid #e5e7eb;
+        }
+      }
+
+      .cost-badge {
+        background: #e6f9ed;
+        color: #1a7f37;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 14px;
+        display: inline-block;
+      }
+
+      .grand-total-row {
+        background: #f3f4f6;
+        font-weight: 700;
+        border-top: 2px solid #e5e7eb;
+
+        td {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .website-data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .website-data-table {
+    min-width: 600px;
+  }
+} 

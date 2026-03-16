@@ -1,23 +1,17 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Nav, Collapse } from 'react-bootstrap';
-import { FaHome, FaCalendarAlt, FaCog, FaBox, FaRegUser} from 'react-icons/fa';
-import { BsChevronDown, BsChevronUp, BsIntersect } from 'react-icons/bs';
+import { FaHome, FaCog, FaRegUser, FaFileInvoice, FaDesktop, FaCalendarAlt, FaChartBar } from 'react-icons/fa';
+import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { MdOutlineSettings } from "react-icons/md";
-import { GoLog } from "react-icons/go";
-import { BiPhoneCall } from "react-icons/bi";
 import Loader from "../Views/loader.js";
 import usePageTitle from './usePageTitle';
-
-
-
-import { TbLogs } from "react-icons/tb";
+ 
 import { CiLogout } from "react-icons/ci";
-import { MDBDropdown, MDBDropdownMenu, MDBDropdownToggle } from 'mdb-react-ui-kit';
+import { MDBCollapse, MDBDropdown, MDBDropdownMenu, MDBDropdownToggle } from 'mdb-react-ui-kit';
 import ProfileModal from './ProfileModal';
-
-import { OPEN_PROFILE_MODAL, CLOSE_PROFILE_MODAL, LOADER_SHOW } from '../../constants/actionTypes';
+import Footer from "../Common/Footer";
+import { OPEN_PROFILE_MODAL, LOADER_SHOW } from '../../constants/actionTypes';
 
 import "./style.scss";
 
@@ -46,9 +40,13 @@ const AuthLayout = ({ children }) => {
 
 
 
-  const [openSettings, setOpenSettings] = useState(true);
-  const [isOpen, setIsOpen] = useState(true);
-  const [openReport, setOpenReport] = useState(true);
+  const [openSettings, setOpenSettings] = useState(false);
+  const [openSchedules, setopenSchedules] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
+  const [openEstimates, setOpenEstimates] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 991);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const navigate_to = useNavigate();
   const location = useLocation(); // Hook to get the current path
@@ -82,6 +80,10 @@ const AuthLayout = ({ children }) => {
     script2.onload = () => {
       if (!document.getElementById('mdb-custom')) {
         document.body.appendChild(script3);
+        setTimeout(function(){
+          document.querySelector("#main-sidenav").style.display = "block";
+        },1000)
+        
       }
     };
 
@@ -105,35 +107,126 @@ const AuthLayout = ({ children }) => {
       }
     }, [currentUser]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 991;
+      setIsMobileView(mobile);
+      if (mobile) {
+        setIsSidebarCollapsed(false);
+      } else {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileView) {
+      setIsMobileSidebarOpen(false);
+    }
+  }, [location.pathname, isMobileView]);
+
 
 
   // Function to check if the current route matches the link's path
   const isActive = (path) => location.pathname === path;
+  const isAnyActive = (paths) => paths.includes(location.pathname);
+  const toggleAccordionSection = (section) => {
+    if (isSidebarCollapsed) {
+      setIsSidebarCollapsed(false);
+      setOpenEstimates(section === 'estimates');
+      setopenSchedules(section === 'schedules');
+      setOpenReport(section === 'report');
+      setOpenSettings(section === 'settings');
+      return;
+    }
+
+    const willOpen = {
+      estimates: !openEstimates,
+      schedules: !openSchedules,
+      report: !openReport,
+      settings: !openSettings
+    }[section];
+
+    setOpenEstimates(section === 'estimates' ? willOpen : false);
+    setopenSchedules(section === 'schedules' ? willOpen : false);
+    setOpenReport(section === 'report' ? willOpen : false);
+    setOpenSettings(section === 'settings' ? willOpen : false);
+  };
+  const toggleSidebarWidth = () => {
+    if (isMobileView) {
+      setIsMobileSidebarOpen((prev) => !prev);
+      return;
+    }
+
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      if (next) {
+        setOpenEstimates(false);
+        setopenSchedules(false);
+        setOpenReport(false);
+        setOpenSettings(false);
+      }
+      return next;
+    });
+  };
+  const handleCollapsedSidebarClick = (event) => {
+    if (isMobileView) {
+      const clickedToggle = event.target.closest('.sidebar-link-toggle');
+      if (clickedToggle) {
+        return;
+      }
+      const clickedLink = event.target.closest('.sidebar-link');
+      if (clickedLink) {
+        setIsMobileSidebarOpen(false);
+      }
+      return;
+    }
+
+    if (!isSidebarCollapsed) {
+      return;
+    }
+
+    const clickedToggle = event.target.closest('.sidebar-link-toggle');
+    if (clickedToggle) {
+      return;
+    }
+
+    const clickedMenuItem = event.target.closest('.sidebar-link');
+    if (clickedMenuItem) {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsSidebarCollapsed(false);
+    }
+  };
 
   return (
-    <Fragment>
+    <Fragment>       
 
       {currentUser && (
         <Fragment>
-          <div className="main">
+          <div className={`main app-layout ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isMobileSidebarOpen ? 'mobile-sidebar-open' : ''}`}>
             <header>
               <nav
                 id="main-sidenav"
                 data-mdb-sidenav-init
-                className="sidenav sidenav-sm shadow-1"
+                className="sidenav sidenav-sm shadow-1 app-sidenav"
                 data-mdb-hidden="false"
                 data-mdb-accordion="true"
+                onClick={handleCollapsedSidebarClick}
               >
-                <Link className="ripple d-flex  pt-4 pb-2 mx-3" to="#">
-                  <img id="MDB-logo" src={require("../../assets/images/zavza-logo.png")} alt="MDB Logo" draggable="false" />
+                <Link className="sidebar-brand" to="#">
+                  <img id="MDB-logo" src={require("../../assets/images/white-zavza-logo.png")} alt="MDB Logo" draggable="false" />
                 </Link>
-                <div className="d-flex align-items-center g-5 pt-3 pb-0 mx-3">
+                <div className="d-flex align-items-center g-5 pt-3 pb-0 mx-3 side-user">
                   <div className="user_img ">
                     {(currentUser && currentUser.profile_image) ? (
                       <a href="#" onClick={() => dispatch(openProfileModal(currentUser.id))}>
                         <img 
                           src={process.env.REACT_APP_BACKEND+currentUser.profile_image} 
-                          className="w-11 rounded-circle" alt="Profile" style={{ width: "40px", height: "40px", objectFit: "cover" }} />
+                          className="w-11 rounded-circle" alt="Profile" style={{ width: "35px", height: "35px", objectFit: "cover", borderRadius: "8px", border: "1px solid #fff" }} />
                       </a>
                     ) : (
                       <span className="w-11 rounded-circle profile-image-span" onClick={() => dispatch(openProfileModal(currentUser.id))}>
@@ -146,101 +239,170 @@ const AuthLayout = ({ children }) => {
                   </div>
                 </div>
                 <hr className="hr" />
-                <Nav className="flex-column" style={{ width: '100%', padding: '7px',  gap: "0px" }}>
-                  <Nav.Link as={Link} to="/dashboard" style={{ color: '#656161' }} active={isActive('/dashboard')}>
-                    <FaHome />
-                    <span>Home</span>
-                  </Nav.Link>
+                <div className="sidebar-menu">
+                  <Link className={`nav-link sidebar-link ${isActive('/dashboard') ? 'active' : ''}`} to="/dashboard">                    
+					<svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.25 0H2.25C1.65326 0 1.08097 0.237053 0.65901 0.65901C0.237053 1.08097 0 1.65326 0 2.25V12.75C0 13.3467 0.237053 13.919 0.65901 14.341C1.08097 14.7629 1.65326 15 2.25 15H17.25C17.8467 15 18.419 14.7629 18.841 14.341C19.2629 13.919 19.5 13.3467 19.5 12.75V2.25C19.5 1.65326 19.2629 1.08097 18.841 0.65901C18.419 0.237053 17.8467 0 17.25 0ZM18 12.75C18 12.9489 17.921 13.1397 17.7803 13.2803C17.6397 13.421 17.4489 13.5 17.25 13.5H2.25C2.05109 13.5 1.86032 13.421 1.71967 13.2803C1.57902 13.1397 1.5 12.9489 1.5 12.75V2.25C1.5 2.05109 1.57902 1.86032 1.71967 1.71967C1.86032 1.57902 2.05109 1.5 2.25 1.5H17.25C17.4489 1.5 17.6397 1.57902 17.7803 1.71967C17.921 1.86032 18 2.05109 18 2.25V12.75ZM13.5 17.25C13.5 17.4489 13.421 17.6397 13.2803 17.7803C13.1397 17.921 12.9489 18 12.75 18H6.75C6.55109 18 6.36032 17.921 6.21967 17.7803C6.07902 17.6397 6 17.4489 6 17.25C6 17.0511 6.07902 16.8603 6.21967 16.7197C6.36032 16.579 6.55109 16.5 6.75 16.5H12.75C12.9489 16.5 13.1397 16.579 13.2803 16.7197C13.421 16.8603 13.5 17.0511 13.5 17.25Z" fill="#EAF6FC"/></svg>
+                    <span>Dashboard</span>
+                  </Link>
+                  <Link className={`nav-link sidebar-link ${isActive('/crm') ? 'active' : ''}`} to="/crm">
+					<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.5603 7.93899L10.0603 0.438992C9.77905 0.1579 9.39766 0 9.00001 0C8.60236 0 8.22097 0.1579 7.9397 0.438992L0.439697 7.93899C0.299732 8.07792 0.188783 8.24328 0.1133 8.42547C0.0378174 8.60766 -0.00069249 8.80304 9.42514e-06 9.00024V18.0002C9.42514e-06 18.1992 0.0790272 18.3899 0.219679 18.5306C0.360332 18.6712 0.551097 18.7502 0.750009 18.7502H17.25C17.4489 18.7502 17.6397 18.6712 17.7803 18.5306C17.921 18.3899 18 18.1992 18 18.0002V9.00024C18.0007 8.80304 17.9622 8.60766 17.8867 8.42547C17.8112 8.24328 17.7003 8.07792 17.5603 7.93899ZM16.5 17.2502H1.50001V9.00024L9.00001 1.50024L16.5 9.00024V17.2502Z" fill="#EAF6FC"/>
+</svg>
+
+                    <span>CRM</span>
+                  </Link>
+                  
+                  {(userRoles && (userRoles.includes("super_admin") || userRoles.includes("admin") || userRoles.includes("estimator"))) && (
+                    <Fragment>
+                      <button
+                        type="button"
+                        onClick={() => toggleAccordionSection('estimates')}
+                        className={`nav-link sidebar-link sidebar-link-toggle text-start ${isAnyActive(['/estimates', '/estimates/templates']) ? 'active' : ''}`}
+                      >
+                        <div>
+							<svg width="17" height="20" viewBox="0 0 17 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.75 9H12.75C12.9489 9 13.1397 8.92098 13.2803 8.78033C13.421 8.63968 13.5 8.44891 13.5 8.25V3.75C13.5 3.55109 13.421 3.36032 13.2803 3.21967C13.1397 3.07902 12.9489 3 12.75 3H3.75C3.55109 3 3.36032 3.07902 3.21967 3.21967C3.07902 3.36032 3 3.55109 3 3.75V8.25C3 8.44891 3.07902 8.63968 3.21967 8.78033C3.36032 8.92098 3.55109 9 3.75 9ZM4.5 4.5H12V7.5H4.5V4.5ZM15 0H1.5C1.10218 0 0.720644 0.158035 0.43934 0.43934C0.158035 0.720644 0 1.10218 0 1.5V18C0 18.3978 0.158035 18.7794 0.43934 19.0607C0.720644 19.342 1.10218 19.5 1.5 19.5H15C15.3978 19.5 15.7794 19.342 16.0607 19.0607C16.342 18.7794 16.5 18.3978 16.5 18V1.5C16.5 1.10218 16.342 0.720644 16.0607 0.43934C15.7794 0.158035 15.3978 0 15 0ZM15 18H1.5V1.5H15V18ZM5.625 11.625C5.625 11.8475 5.55902 12.065 5.4354 12.25C5.31179 12.435 5.13609 12.5792 4.93052 12.6644C4.72495 12.7495 4.49875 12.7718 4.28052 12.7284C4.06229 12.685 3.86184 12.5778 3.7045 12.4205C3.54717 12.2632 3.44002 12.0627 3.39662 11.8445C3.35321 11.6262 3.37549 11.4 3.46064 11.1945C3.54578 10.9889 3.68998 10.8132 3.87498 10.6896C4.05999 10.566 4.2775 10.5 4.5 10.5C4.79837 10.5 5.08452 10.6185 5.2955 10.8295C5.50647 11.0405 5.625 11.3266 5.625 11.625ZM9.375 11.625C9.375 11.8475 9.30902 12.065 9.1854 12.25C9.06179 12.435 8.88608 12.5792 8.68052 12.6644C8.47495 12.7495 8.24875 12.7718 8.03052 12.7284C7.81229 12.685 7.61184 12.5778 7.4545 12.4205C7.29717 12.2632 7.19002 12.0627 7.14662 11.8445C7.10321 11.6262 7.12549 11.4 7.21064 11.1945C7.29578 10.9889 7.43998 10.8132 7.62498 10.6896C7.80999 10.566 8.0275 10.5 8.25 10.5C8.54837 10.5 8.83452 10.6185 9.04549 10.8295C9.25647 11.0405 9.375 11.3266 9.375 11.625ZM13.125 11.625C13.125 11.8475 13.059 12.065 12.9354 12.25C12.8118 12.435 12.6361 12.5792 12.4305 12.6644C12.225 12.7495 11.9988 12.7718 11.7805 12.7284C11.5623 12.685 11.3618 12.5778 11.2045 12.4205C11.0472 12.2632 10.94 12.0627 10.8966 11.8445C10.8532 11.6262 10.8755 11.4 10.9606 11.1945C11.0458 10.9889 11.19 10.8132 11.375 10.6896C11.56 10.566 11.7775 10.5 12 10.5C12.2984 10.5 12.5845 10.6185 12.7955 10.8295C13.0065 11.0405 13.125 11.3266 13.125 11.625ZM5.625 15.375C5.625 15.5975 5.55902 15.815 5.4354 16C5.31179 16.185 5.13609 16.3292 4.93052 16.4144C4.72495 16.4995 4.49875 16.5218 4.28052 16.4784C4.06229 16.435 3.86184 16.3278 3.7045 16.1705C3.54717 16.0132 3.44002 15.8127 3.39662 15.5945C3.35321 15.3762 3.37549 15.15 3.46064 14.9445C3.54578 14.7389 3.68998 14.5632 3.87498 14.4396C4.05999 14.316 4.2775 14.25 4.5 14.25C4.79837 14.25 5.08452 14.3685 5.2955 14.5795C5.50647 14.7905 5.625 15.0766 5.625 15.375ZM9.375 15.375C9.375 15.5975 9.30902 15.815 9.1854 16C9.06179 16.185 8.88608 16.3292 8.68052 16.4144C8.47495 16.4995 8.24875 16.5218 8.03052 16.4784C7.81229 16.435 7.61184 16.3278 7.4545 16.1705C7.29717 16.0132 7.19002 15.8127 7.14662 15.5945C7.10321 15.3762 7.12549 15.15 7.21064 14.9445C7.29578 14.7389 7.43998 14.5632 7.62498 14.4396C7.80999 14.316 8.0275 14.25 8.25 14.25C8.54837 14.25 8.83452 14.3685 9.04549 14.5795C9.25647 14.7905 9.375 15.0766 9.375 15.375ZM13.125 15.375C13.125 15.5975 13.059 15.815 12.9354 16C12.8118 16.185 12.6361 16.3292 12.4305 16.4144C12.225 16.4995 11.9988 16.5218 11.7805 16.4784C11.5623 16.435 11.3618 16.3278 11.2045 16.1705C11.0472 16.0132 10.94 15.8127 10.8966 15.5945C10.8532 15.3762 10.8755 15.15 10.9606 14.9445C11.0458 14.7389 11.19 14.5632 11.375 14.4396C11.56 14.316 11.7775 14.25 12 14.25C12.2984 14.25 12.5845 14.3685 12.7955 14.5795C13.0065 14.7905 13.125 15.0766 13.125 15.375Z" fill="#EAF6FC"/></svg>
+							<span>Estimates</span>
+                        </div>
+                        {openEstimates ? <BsChevronUp className="inner_icon" /> : <BsChevronDown className="inner_icon" />}
+                      </button>
+                      <MDBCollapse open={openEstimates}>
+                        <div>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/estimates') ? 'active' : ''}`} to="/estimates">
+                            <span>Estimate List</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/estimates/templates') ? 'active' : ''}`} to="/estimates/templates">
+                            <span>Templates</span>
+                          </Link>
+                        </div>
+                      </MDBCollapse>
+                    </Fragment>
+                  )}
+                 
                   {(userRoles && (userRoles.includes("super_admin") || userRoles.includes("admin") || userRoles.includes("crew"))) && (
                     <Fragment>
-                      <Nav.Link as={Link} to="/calendars" style={{ color: '#656161' }} active={isActive('/calendars')}>
-                        <FaCalendarAlt />
-                        <span>Calendar</span>
-                      </Nav.Link>
-                      <Fragment></Fragment>  
+                    <button
+                      type="button"
+                      onClick={() => toggleAccordionSection('schedules')}
+                      className={`nav-link sidebar-link sidebar-link-toggle text-start ${(isActive('/calendars') || isActive('/crew')) ? 'active' : ''}`}
+                    >
+						<div>
+							<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.8125 1.4375H13.6562V0.71875C13.6562 0.528126 13.5805 0.345309 13.4457 0.210517C13.3109 0.0757252 13.1281 0 12.9375 0C12.7469 0 12.5641 0.0757252 12.4293 0.210517C12.2945 0.345309 12.2188 0.528126 12.2188 0.71875V1.4375H5.03125V0.71875C5.03125 0.528126 4.95552 0.345309 4.82073 0.210517C4.68594 0.0757252 4.50312 0 4.3125 0C4.12188 0 3.93906 0.0757252 3.80427 0.210517C3.66948 0.345309 3.59375 0.528126 3.59375 0.71875V1.4375H1.4375C1.05625 1.4375 0.690617 1.58895 0.421034 1.85853C0.15145 2.12812 0 2.49375 0 2.875V17.25C0 17.6312 0.15145 17.9969 0.421034 18.2665C0.690617 18.536 1.05625 18.6875 1.4375 18.6875H15.8125C16.1937 18.6875 16.5594 18.536 16.829 18.2665C17.0985 17.9969 17.25 17.6312 17.25 17.25V2.875C17.25 2.49375 17.0985 2.12812 16.829 1.85853C16.5594 1.58895 16.1937 1.4375 15.8125 1.4375ZM3.59375 2.875V3.59375C3.59375 3.78437 3.66948 3.96719 3.80427 4.10198C3.93906 4.23677 4.12188 4.3125 4.3125 4.3125C4.50312 4.3125 4.68594 4.23677 4.82073 4.10198C4.95552 3.96719 5.03125 3.78437 5.03125 3.59375V2.875H12.2188V3.59375C12.2188 3.78437 12.2945 3.96719 12.4293 4.10198C12.5641 4.23677 12.7469 4.3125 12.9375 4.3125C13.1281 4.3125 13.3109 4.23677 13.4457 4.10198C13.5805 3.96719 13.6562 3.78437 13.6562 3.59375V2.875H15.8125V5.75H1.4375V2.875H3.59375ZM15.8125 17.25H1.4375V7.1875H15.8125V17.25ZM9.70312 10.4219C9.70312 10.6351 9.63989 10.8436 9.52143 11.0208C9.40296 11.1981 9.23458 11.3363 9.03758 11.4179C8.84058 11.4995 8.6238 11.5209 8.41467 11.4793C8.20553 11.4377 8.01343 11.335 7.86265 11.1842C7.71187 11.0334 7.60919 10.8413 7.56759 10.6322C7.52599 10.4231 7.54734 10.2063 7.62894 10.0093C7.71054 9.81229 7.84873 9.64391 8.02603 9.52545C8.20332 9.40698 8.41177 9.34375 8.625 9.34375C8.91094 9.34375 9.18516 9.45734 9.38735 9.65952C9.58954 9.86171 9.70312 10.1359 9.70312 10.4219ZM13.6562 10.4219C13.6562 10.6351 13.593 10.8436 13.4746 11.0208C13.3561 11.1981 13.1877 11.3363 12.9907 11.4179C12.7937 11.4995 12.5769 11.5209 12.3678 11.4793C12.1587 11.4377 11.9666 11.335 11.8158 11.1842C11.665 11.0334 11.5623 10.8413 11.5207 10.6322C11.4791 10.4231 11.5005 10.2063 11.5821 10.0093C11.6637 9.81229 11.8019 9.64391 11.9792 9.52545C12.1564 9.40698 12.3649 9.34375 12.5781 9.34375C12.8641 9.34375 13.1383 9.45734 13.3405 9.65952C13.5427 9.86171 13.6562 10.1359 13.6562 10.4219ZM5.75 14.0156C5.75 14.2289 5.68677 14.4373 5.5683 14.6146C5.44984 14.7919 5.28146 14.9301 5.08446 15.0117C4.88745 15.0933 4.67068 15.1146 4.46154 15.073C4.25241 15.0314 4.0603 14.9288 3.90953 14.778C3.75875 14.6272 3.65607 14.4351 3.61447 14.226C3.57287 14.0168 3.59422 13.8 3.67582 13.603C3.75742 13.406 3.8956 13.2377 4.0729 13.1192C4.2502 13.0007 4.45864 12.9375 4.67188 12.9375C4.95781 12.9375 5.23204 13.0511 5.43422 13.2533C5.63641 13.4555 5.75 13.7297 5.75 14.0156ZM9.70312 14.0156C9.70312 14.2289 9.63989 14.4373 9.52143 14.6146C9.40296 14.7919 9.23458 14.9301 9.03758 15.0117C8.84058 15.0933 8.6238 15.1146 8.41467 15.073C8.20553 15.0314 8.01343 14.9288 7.86265 14.778C7.71187 14.6272 7.60919 14.4351 7.56759 14.226C7.52599 14.0168 7.54734 13.8 7.62894 13.603C7.71054 13.406 7.84873 13.2377 8.02603 13.1192C8.20332 13.0007 8.41177 12.9375 8.625 12.9375C8.91094 12.9375 9.18516 13.0511 9.38735 13.2533C9.58954 13.4555 9.70312 13.7297 9.70312 14.0156ZM13.6562 14.0156C13.6562 14.2289 13.593 14.4373 13.4746 14.6146C13.3561 14.7919 13.1877 14.9301 12.9907 15.0117C12.7937 15.0933 12.5769 15.1146 12.3678 15.073C12.1587 15.0314 11.9666 14.9288 11.8158 14.778C11.665 14.6272 11.5623 14.4351 11.5207 14.226C11.4791 14.0168 11.5005 13.8 11.5821 13.603C11.6637 13.406 11.8019 13.2377 11.9792 13.1192C12.1564 13.0007 12.3649 12.9375 12.5781 12.9375C12.8641 12.9375 13.1383 13.0511 13.3405 13.2533C13.5427 13.4555 13.6562 13.7297 13.6562 14.0156Z" fill="#EAF6FC"/></svg>
+							<span>Schedules</span>
+						</div>
+                      {openSchedules ? <BsChevronUp className="inner_icon" /> : <BsChevronDown className="inner_icon" />}
+                    </button>
+                    <MDBCollapse open={openSchedules}>
+                        <div>
+                        <Link className={`nav-link sidebar-link sub-link ${isActive('/calendars') ? 'active' : ''}`} to="/calendars">
+                            <span>Calendar</span>
+                          </Link>
+                          
+                         {(userRoles && (userRoles.includes("super_admin") || userRoles.includes("admin"))) && ( 
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/crew') ? 'active' : ''}`} to="/crew">
+                            <span>Crew</span>
+                          </Link>
+                        )} 
+                          
+                        </div>
+                      </MDBCollapse>
                     </Fragment>
                   )}
                   {(userRoles && (userRoles.includes("super_admin") || userRoles.includes("admin"))) && (
-                    <Fragment>
-                      <Nav.Link
-                        href="#"
-                        onClick={() => setOpenSettings(!openSettings)}
-                        style={{ color: '#656161', display: 'flex', justifyContent: 'space-between' }}
-                        active={isActive('/settings')}
+                    <Fragment>  
+                      <button
+                        type="button"
+                        onClick={() => toggleAccordionSection('report')}
+                        className={`nav-link sidebar-link sidebar-link-toggle text-start ${isAnyActive(['/ring-central', '/lead-cost', '/dummy-report', '/marketing-report']) ? 'active' : ''}`}
                       >
                         <div>
-                          <FaCog />
-                          <span>Settings</span>
+                          <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.75 15.75H18V0.75C18 0.551088 17.921 0.360322 17.7803 0.21967C17.6397 0.0790178 17.4489 0 17.25 0H12C11.8011 0 11.6103 0.0790178 11.4697 0.21967C11.329 0.360322 11.25 0.551088 11.25 0.75V4.5H6.75C6.55109 4.5 6.36032 4.57902 6.21967 4.71967C6.07902 4.86032 6 5.05109 6 5.25V9H2.25C2.05109 9 1.86032 9.07902 1.71967 9.21967C1.57902 9.36032 1.5 9.55109 1.5 9.75V15.75H0.75C0.551088 15.75 0.360322 15.829 0.21967 15.9697C0.0790176 16.1103 0 16.3011 0 16.5C0 16.6989 0.0790176 16.8897 0.21967 17.0303C0.360322 17.171 0.551088 17.25 0.75 17.25H18.75C18.9489 17.25 19.1397 17.171 19.2803 17.0303C19.421 16.8897 19.5 16.6989 19.5 16.5C19.5 16.3011 19.421 16.1103 19.2803 15.9697C19.1397 15.829 18.9489 15.75 18.75 15.75ZM12.75 1.5H16.5V15.75H12.75V1.5ZM7.5 6H11.25V15.75H7.5V6ZM3 10.5H6V15.75H3V10.5Z" fill="#EAF6FC"/></svg>
+                          <span>Reports</span>
                         </div>
-                        {openSettings ? <BsChevronUp /> : <BsChevronDown />}
-                      </Nav.Link>
-                      <Collapse in={openSettings}>
+                        {openReport ? <BsChevronUp className="inner_icon" /> : <BsChevronDown className="inner_icon" />}
+                      </button>
+                      <MDBCollapse open={openReport}>
                         <div>
-                          <Nav.Link as={Link} to="/roles" style={{ color: '#656161', paddingLeft: '38px' }} active={isActive('/roles')}>
-                            <BsIntersect />
-                            <span>Roles</span>
-                          </Nav.Link>
-                          <Nav.Link as={Link} to="/users" style={{ color: '#656161', paddingLeft: '38px' }} active={isActive('/users')}>
-                            <FaRegUser />
-                            <span>Users</span>
-                          </Nav.Link>
-                          <Nav.Link as={Link} to="/ring-central-settings" style={{ color: '#656161', paddingLeft: '38px' }} active={isActive('/ring-central-settings')}>
-                            <MdOutlineSettings />
-                            <span>Ring Central Settings</span>
-                          </Nav.Link>
-                          <Nav.Link as={Link} to="/time-logs" style={{ color: '#656161', paddingLeft: '38px' }} active={isActive('/time-logs')}>
-                            <GoLog />
-                            <span>Time Log</span>
-                          </Nav.Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/ring-central') ? 'active' : ''}`} to="/ring-central">
+                            <span>Ring Central</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/lead-cost') ? 'active' : ''}`} to="/lead-cost">
+                            <span>Lead Cost</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/dummy-report') ? 'active' : ''}`} to="/dummy-report">
+                            <span>Dummy Report</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/marketing-report') ? 'active' : ''}`} to="/marketing-report">
+                            <span>Marketing Report</span>
+                          </Link>
                         </div>
-                      </Collapse>
-                      <Fragment></Fragment>  
+                      </MDBCollapse>
                     </Fragment>  
                   )}
                   {(userRoles && (userRoles.includes("super_admin") || userRoles.includes("admin"))) && (
-                    <Fragment>  
-                      <Nav.Link
-                        href="#"
-                        onClick={() => setOpenReport(!openReport)}
-                        style={{ color: '#656161', display: 'flex', justifyContent: 'space-between' }}
-                        active={isActive('/report')}
+                    <Fragment>
+                      <button
+                        type="button"
+                        onClick={() => toggleAccordionSection('settings')}
+                        className={`nav-link sidebar-link sidebar-link-toggle text-start ${isAnyActive(['/roles', '/users', '/settings', '/time-logs']) ? 'active' : ''}`}
                       >
                         <div>
-                          <FaBox />
-                          <span>Report</span>
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.8101 5.3101C8.92009 5.3101 8.05006 5.57402 7.31004 6.06849C6.57001 6.56296 5.99324 7.26576 5.65264 8.08803C5.31205 8.91029 5.22294 9.81509 5.39657 10.688C5.5702 11.5609 5.99879 12.3627 6.62812 12.9921C7.25746 13.6214 8.05928 14.05 8.9322 14.2236C9.80511 14.3973 10.7099 14.3082 11.5322 13.9676C12.3544 13.627 13.0572 13.0502 13.5517 12.3102C14.0462 11.5701 14.3101 10.7001 14.3101 9.8101C14.3089 8.61701 13.8344 7.47314 12.9907 6.62949C12.1471 5.78585 11.0032 5.31134 9.8101 5.3101ZM9.8101 12.8101C9.21676 12.8101 8.63674 12.6342 8.14339 12.3045C7.65004 11.9749 7.26553 11.5063 7.03846 10.9582C6.8114 10.41 6.75199 9.80677 6.86775 9.22483C6.9835 8.64289 7.26922 8.10834 7.68878 7.68878C8.10834 7.26922 8.64289 6.9835 9.22483 6.86775C9.80677 6.75199 10.41 6.8114 10.9582 7.03846C11.5063 7.26553 11.9749 7.65004 12.3045 8.14339C12.6342 8.63674 12.8101 9.21676 12.8101 9.8101C12.8101 10.6058 12.494 11.3688 11.9314 11.9314C11.3688 12.494 10.6058 12.8101 9.8101 12.8101ZM18.0601 10.0126C18.0639 9.8776 18.0639 9.7426 18.0601 9.6076L19.4589 7.8601C19.5322 7.76835 19.583 7.66065 19.6071 7.54569C19.6312 7.43073 19.6279 7.31171 19.5976 7.19823C19.3683 6.33629 19.0253 5.50871 18.5776 4.73729C18.519 4.63634 18.4376 4.55046 18.34 4.4865C18.2423 4.42254 18.1311 4.38225 18.0151 4.36885L15.7914 4.12135C15.6989 4.02385 15.6051 3.9301 15.5101 3.8401L15.2476 1.61073C15.2341 1.49468 15.1937 1.38338 15.1295 1.28572C15.0654 1.18806 14.9794 1.10674 14.8782 1.04823C14.1065 0.601364 13.279 0.258696 12.4173 0.0291639C12.3037 -0.0010265 12.1847 -0.00411435 12.0697 0.0201492C11.9547 0.0444127 11.8471 0.0953487 11.7554 0.168851L10.0126 1.5601C9.8776 1.5601 9.7426 1.5601 9.6076 1.5601L7.8601 0.164164C7.76835 0.0908217 7.66065 0.0400557 7.54569 0.0159556C7.43073 -0.00814444 7.31171 -0.0049048 7.19823 0.0254138C6.33643 0.255127 5.5089 0.598117 4.73729 1.04541C4.63634 1.10403 4.55046 1.18541 4.4865 1.28306C4.42254 1.38071 4.38225 1.49195 4.36885 1.60791L4.12135 3.83541C4.02385 3.92854 3.9301 4.02229 3.8401 4.11666L1.61073 4.3726C1.49468 4.3861 1.38338 4.42653 1.28572 4.49066C1.18806 4.55479 1.10674 4.64085 1.04823 4.74198C0.601364 5.51369 0.258696 6.3412 0.0291639 7.20291C-0.0010265 7.31647 -0.00411435 7.43553 0.0201492 7.55049C0.0444127 7.66546 0.0953487 7.77312 0.168851 7.86479L1.5601 9.6076C1.5601 9.7426 1.5601 9.8776 1.5601 10.0126L0.164164 11.7601C0.0908217 11.8519 0.0400557 11.9595 0.0159556 12.0745C-0.00814444 12.1895 -0.0049048 12.3085 0.0254138 12.422C0.254717 13.2839 0.597729 14.1115 1.04541 14.8829C1.10403 14.9839 1.18541 15.0697 1.28306 15.1337C1.38071 15.1977 1.49195 15.238 1.60791 15.2514L3.83166 15.4989C3.92479 15.5964 4.01854 15.6901 4.11291 15.7801L4.3726 18.0095C4.3861 18.1255 4.42653 18.2368 4.49066 18.3345C4.55479 18.4321 4.64085 18.5135 4.74198 18.572C5.51369 19.0188 6.3412 19.3615 7.20291 19.591C7.31647 19.6212 7.43553 19.6243 7.55049 19.6001C7.66546 19.5758 7.77312 19.5249 7.86479 19.4514L9.6076 18.0601C9.7426 18.0639 9.8776 18.0639 10.0126 18.0601L11.7601 19.4589C11.8519 19.5322 11.9595 19.583 12.0745 19.6071C12.1895 19.6312 12.3085 19.6279 12.422 19.5976C13.2839 19.3683 14.1115 19.0253 14.8829 18.5776C14.9839 18.519 15.0697 18.4376 15.1337 18.34C15.1977 18.2423 15.238 18.1311 15.2514 18.0151L15.4989 15.7914C15.5964 15.6989 15.6901 15.6051 15.7801 15.5101L18.0095 15.2476C18.1255 15.2341 18.2368 15.1937 18.3345 15.1295C18.4321 15.0654 18.5135 14.9794 18.572 14.8782C19.0188 14.1065 19.3615 13.279 19.591 12.4173C19.6212 12.3037 19.6243 12.1847 19.6001 12.0697C19.5758 11.9547 19.5249 11.8471 19.4514 11.7554L18.0601 10.0126ZM16.5507 9.40323C16.5667 9.67424 16.5667 9.94596 16.5507 10.217C16.5396 10.4025 16.5977 10.5856 16.7139 10.7307L18.0442 12.3929C17.8915 12.878 17.6961 13.3486 17.4601 13.7992L15.3414 14.0392C15.1568 14.0596 14.9865 14.1478 14.8632 14.2867C14.6828 14.4896 14.4906 14.6818 14.2876 14.8623C14.1488 14.9855 14.0606 15.1559 14.0401 15.3404L13.8048 17.4573C13.3543 17.6934 12.8837 17.8888 12.3985 18.0414L10.7354 16.711C10.6023 16.6047 10.437 16.5468 10.2667 16.547H10.2217C9.95065 16.5629 9.67893 16.5629 9.40792 16.547C9.22237 16.5358 9.03928 16.5939 8.89417 16.7101L7.22729 18.0414C6.74216 17.8887 6.27156 17.6932 5.82104 17.4573L5.58104 15.3414C5.56056 15.1568 5.47237 14.9865 5.33354 14.8632C5.13058 14.6828 4.93837 14.4906 4.75791 14.2876C4.63466 14.1488 4.4643 14.0606 4.27979 14.0401L2.16291 13.8039C1.92684 13.3534 1.73138 12.8828 1.57885 12.3976L2.90916 10.7345C3.02533 10.5894 3.08346 10.4063 3.07229 10.2207C3.05635 9.94971 3.05635 9.67799 3.07229 9.40698C3.08346 9.22143 3.02533 9.03835 2.90916 8.89323L1.57885 7.22729C1.7315 6.74216 1.92696 6.27156 2.16291 5.82104L4.27885 5.58104C4.46337 5.56056 4.63373 5.47237 4.75698 5.33354C4.93744 5.13058 5.12964 4.93837 5.3326 4.75791C5.47199 4.63458 5.56054 4.46383 5.58104 4.27885L5.81635 2.16291C6.26682 1.92684 6.73743 1.73138 7.2226 1.57885L8.88573 2.90916C9.03085 3.02533 9.21393 3.08346 9.39948 3.07229C9.67049 3.05635 9.94221 3.05635 10.2132 3.07229C10.3988 3.08346 10.5819 3.02533 10.727 2.90916L12.3929 1.57885C12.878 1.7315 13.3486 1.92696 13.7992 2.16291L14.0392 4.27885C14.0596 4.46337 14.1478 4.63373 14.2867 4.75698C14.4896 4.93744 14.6818 5.12964 14.8623 5.3326C14.9855 5.47143 15.1559 5.55962 15.3404 5.5801L17.4573 5.81541C17.6934 6.26589 17.8888 6.7365 18.0414 7.22166L16.711 8.88479C16.5938 9.03113 16.5356 9.2161 16.5479 9.40323H16.5507Z" fill="white"/></svg>
+
+                          <span>Settings</span>
                         </div>
-                        {openReport ? <BsChevronUp /> : <BsChevronDown />}
-                      </Nav.Link>
-                      <Collapse in={openReport}>
+                        {openSettings ? <BsChevronUp className="inner_icon" /> : <BsChevronDown className="inner_icon" />}
+                      </button>
+                      <MDBCollapse open={openSettings}>
                         <div>
-                          <Nav.Link as={Link} to="/ring-central" style={{ color: '#656161', paddingLeft: '38px' }} active={isActive('/ring-central')}>
-                            <BiPhoneCall />
-                            <span>Ring Central</span>
-                          </Nav.Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/roles') ? 'active' : ''}`} to="/roles">
+                            <span>Roles</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/users') ? 'active' : ''}`} to="/users">
+                            <span>Users</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/settings') ? 'active' : ''}`} to="/settings">
+                            <span>Settings</span>
+                          </Link>
+                          <Link className={`nav-link sidebar-link sub-link ${isActive('/time-logs') ? 'active' : ''}`} to="/time-logs">
+                            <span>Time Log</span>
+                          </Link>
                         </div>
-                      </Collapse>
+                      </MDBCollapse>
+                      <Fragment></Fragment>  
                     </Fragment>  
                   )}
-                </Nav>
+                  
+                </div>
               </nav>
               <nav id="main-navbar" className="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-1">
                 <div className="container-fluid">
-                  <button
-                    data-mdb-toggle="sidenav"
-                    data-mdb-target="#main-sidenav"
-                    className="btn shadow-0 p-0 me-3 sidenav-btn-cst"
-                    aria-controls="#main-sidenav"
-                    aria-haspopup="true"
-                  >
-                    <i className="fas fa-bars fa-lg"></i>
-                  </button>
-                  <form className="d-none d-md-flex input-group w-auto my-auto">
-                    <input id="search-focus" type="search" className="form-control rounded" placeholder="Search" />
-                    <span className="input-group-text border-0">
-                      <i className="fas fa-search text-secondary"></i>
-                    </span>
-                  </form>
-                  <MDBDropdown>
+                  <div className="topbar-left d-flex align-items-center">
+                    <button
+                      className="btn shadow-0 sidenav-toggle-btn"
+                      aria-controls="#main-sidenav"
+                      aria-haspopup="true"
+                      aria-expanded={isMobileView ? isMobileSidebarOpen : !isSidebarCollapsed}
+                      type="button"
+                      onClick={toggleSidebarWidth}
+                    >
+                      <i className="fas fa-bars"></i>
+                    </button>
+                  </div>
+
+                  <div className="topbar-right ms-auto d-flex align-items-center">
+                    <form className="topbar-search d-none d-md-flex my-auto">
+                      <input id="search-focus" type="search" className="form-control rounded" placeholder="Search..." />
+                      <span className="input-group-text border-0"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.375 8.25H8.7825L8.5725 8.0475C9.3075 7.1925 9.75 6.0825 9.75 4.875C9.75 2.1825 7.5675 0 4.875 0C2.1825 0 0 2.1825 0 4.875C0 7.5675 2.1825 9.75 4.875 9.75C6.0825 9.75 7.1925 9.3075 8.0475 8.5725L8.25 8.7825V9.375L12 13.1175L13.1175 12L9.375 8.25ZM4.875 8.25C3.0075 8.25 1.5 6.7425 1.5 4.875C1.5 3.0075 3.0075 1.5 4.875 1.5C6.7425 1.5 8.25 3.0075 8.25 4.875C8.25 6.7425 6.7425 8.25 4.875 8.25Z" fill="#646464" fill-opacity="0.866667"/></svg></span>
+                    </form>
+
+                    <button className="btn topbar-icon-btn shadow-0" type="button" aria-label="Notifications">
+                    <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.8411 10.9577C13.4364 10.2682 12.8347 8.31743 12.8347 5.76948C12.8347 4.23932 12.22 2.77183 11.1259 1.68984C10.0317 0.607854 8.54773 0 7.00036 0C5.453 0 3.96901 0.607854 2.87486 1.68984C1.78071 2.77183 1.16602 4.23932 1.16602 5.76948C1.16602 8.31815 0.563627 10.2682 0.15887 10.9577C0.0555075 11.133 0.000711275 11.3321 6.87793e-06 11.535C-0.00069752 11.7379 0.052715 11.9374 0.154858 12.1134C0.257001 12.2894 0.404262 12.4356 0.58179 12.5373C0.759319 12.6391 0.960838 12.6927 1.16602 12.6929H4.14227C4.27687 13.3442 4.63485 13.9296 5.15564 14.35C5.67644 14.7704 6.32808 15 7.00036 15C7.67264 15 8.32429 14.7704 8.84509 14.35C9.36588 13.9296 9.72386 13.3442 9.85846 12.6929H12.8347C13.0398 12.6926 13.2413 12.6388 13.4187 12.5371C13.5961 12.4353 13.7433 12.289 13.8453 12.1131C13.9474 11.9371 14.0007 11.7377 14 11.5348C13.9993 11.332 13.9445 11.1329 13.8411 10.9577ZM7.00036 13.8468C6.6385 13.8466 6.28557 13.7356 5.99015 13.529C5.69472 13.3223 5.47132 13.0302 5.3507 12.6929H8.65002C8.5294 13.0302 8.30601 13.3223 8.01058 13.529C7.71516 13.7356 7.36223 13.8466 7.00036 13.8468ZM1.16602 11.539C1.72758 10.5841 2.33289 8.37152 2.33289 5.76948C2.33289 4.54535 2.82464 3.37136 3.69996 2.50577C4.57528 1.64018 5.76247 1.1539 7.00036 1.1539C8.23826 1.1539 9.42545 1.64018 10.3008 2.50577C11.1761 3.37136 11.6678 4.54535 11.6678 5.76948C11.6678 8.36935 12.2717 10.5819 12.8347 11.539H1.16602Z" fill="#646464"/></svg>
+                    </button>
+                    <button className="btn topbar-icon-btn shadow-0" type="button" aria-label="Settings">
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.49893 4.05909C6.81859 4.05909 6.15353 4.26083 5.58785 4.6388C5.02217 5.01678 4.58128 5.55401 4.32093 6.18256C4.06058 6.8111 3.99246 7.50274 4.12518 8.17C4.25791 8.83727 4.58552 9.45019 5.06659 9.93126C5.54766 10.4123 6.16058 10.7399 6.82785 10.8727C7.49511 11.0054 8.18675 10.9373 8.81529 10.6769C9.44384 10.4166 9.98107 9.97568 10.359 9.41C10.737 8.84432 10.9388 8.17926 10.9388 7.49893C10.9378 6.58691 10.5751 5.71253 9.93021 5.06764C9.28532 4.42275 8.41094 4.06004 7.49893 4.05909ZM7.49893 9.79215C7.04537 9.79215 6.602 9.65765 6.22488 9.40567C5.84776 9.15369 5.55383 8.79554 5.38026 8.3765C5.20669 7.95747 5.16128 7.49638 5.24976 7.05154C5.33825 6.6067 5.55666 6.19808 5.87737 5.87737C6.19808 5.55666 6.6067 5.33825 7.05154 5.24976C7.49638 5.16128 7.95747 5.20669 8.3765 5.38026C8.79554 5.55383 9.15369 5.84776 9.40567 6.22488C9.65765 6.602 9.79215 7.04537 9.79215 7.49893C9.79215 8.10713 9.55054 8.69042 9.12048 9.12048C8.69042 9.55054 8.10713 9.79215 7.49893 9.79215ZM13.8053 7.65372C13.8082 7.55052 13.8082 7.44733 13.8053 7.34413L14.8745 6.00833C14.9306 5.93819 14.9694 5.85587 14.9878 5.76799C15.0062 5.68011 15.0037 5.58913 14.9806 5.50239C14.8053 4.84351 14.5431 4.21091 14.2009 3.62122C14.1561 3.54406 14.0939 3.47841 14.0192 3.42952C13.9446 3.38062 13.8595 3.34983 13.7709 3.33959L12.071 3.1504C12.0003 3.07587 11.9287 3.0042 11.8561 2.93541L11.6554 1.23125C11.6451 1.14254 11.6142 1.05747 11.5652 0.982818C11.5161 0.908166 11.4503 0.845999 11.373 0.801273C10.7831 0.459688 10.1506 0.197749 9.49188 0.0222931C9.40508 -0.000784666 9.31407 -0.00314505 9.22619 0.0154022C9.13831 0.0339494 9.05601 0.0728854 8.98594 0.129071L7.65372 1.19255C7.55052 1.19255 7.44733 1.19255 7.34413 1.19255L6.00833 0.125488C5.93819 0.0694249 5.85587 0.0306189 5.76799 0.0121966C5.68011 -0.00622568 5.58913 -0.00374927 5.50239 0.0194265C4.84362 0.195021 4.21105 0.457206 3.62122 0.799123C3.54406 0.843931 3.47841 0.906135 3.42952 0.980782C3.38062 1.05543 3.34983 1.14046 3.33959 1.2291L3.1504 2.93182C3.07587 3.00301 3.0042 3.07467 2.93541 3.14681L1.23125 3.34245C1.14254 3.35277 1.05747 3.38368 0.982818 3.4327C0.908166 3.48172 0.845999 3.54751 0.801273 3.62481C0.459688 4.21471 0.197749 4.84727 0.0222931 5.50597C-0.000784666 5.59277 -0.00314505 5.68378 0.0154022 5.77166C0.0339494 5.85954 0.0728854 5.94184 0.129071 6.01191L1.19255 7.34413C1.19255 7.44733 1.19255 7.55052 1.19255 7.65372L0.125488 8.98952C0.0694249 9.05966 0.0306189 9.14198 0.0121966 9.22986C-0.00622568 9.31774 -0.00374927 9.40872 0.0194265 9.49546C0.194707 10.1543 0.456909 10.7869 0.799123 11.3766C0.843931 11.4538 0.906135 11.5194 0.980782 11.5683C1.05543 11.6172 1.14046 11.648 1.2291 11.6583L2.92896 11.8475C3.00014 11.922 3.07181 11.9936 3.14395 12.0624L3.34245 13.7666C3.35277 13.8553 3.38368 13.9404 3.4327 14.015C3.48172 14.0897 3.54751 14.1519 3.62481 14.1966C4.21471 14.5382 4.84727 14.8001 5.50597 14.9756C5.59277 14.9986 5.68378 15.001 5.77166 14.9824C5.85954 14.9639 5.94184 14.925 6.01191 14.8688L7.34413 13.8053C7.44733 13.8082 7.55052 13.8082 7.65372 13.8053L8.98952 14.8745C9.05966 14.9306 9.14198 14.9694 9.22986 14.9878C9.31774 15.0062 9.40872 15.0037 9.49546 14.9806C10.1543 14.8053 10.7869 14.5431 11.3766 14.2009C11.4538 14.1561 11.5194 14.0939 11.5683 14.0192C11.6172 13.9446 11.648 13.8595 11.6583 13.7709L11.8475 12.071C11.922 12.0003 11.9936 11.9287 12.0624 11.8561L13.7666 11.6554C13.8553 11.6451 13.9404 11.6142 14.015 11.5652C14.0897 11.5161 14.1519 11.4503 14.1966 11.373C14.5382 10.7831 14.8001 10.1506 14.9756 9.49188C14.9986 9.40508 15.001 9.31407 14.9824 9.22619C14.9639 9.13831 14.925 9.05601 14.8688 8.98594L13.8053 7.65372ZM12.6515 7.18791C12.6637 7.39507 12.6637 7.60278 12.6515 7.80994C12.643 7.95178 12.6874 8.09173 12.7762 8.20266L13.7931 9.47325C13.6764 9.84408 13.527 10.2038 13.3467 10.5482L11.7271 10.7317C11.586 10.7473 11.4558 10.8147 11.3616 10.9208C11.2236 11.076 11.0767 11.2229 10.9216 11.3609C10.8154 11.4551 10.748 11.5853 10.7324 11.7263L10.5525 13.3445C10.2082 13.525 9.84842 13.6744 9.47755 13.791L8.20624 12.7741C8.10451 12.6928 7.97814 12.6485 7.84793 12.6486H7.81353C7.60636 12.6608 7.39866 12.6608 7.19149 12.6486C7.04966 12.6401 6.9097 12.6845 6.79877 12.7733L5.5246 13.791C5.15377 13.6743 4.79404 13.5249 4.44965 13.3445L4.26619 11.7271C4.25054 11.586 4.18313 11.4558 4.077 11.3616C3.92186 11.2236 3.77494 11.0767 3.63699 10.9216C3.54278 10.8154 3.41255 10.748 3.27151 10.7324L1.65335 10.5518C1.4729 10.2074 1.32348 9.8477 1.20689 9.47683L2.22379 8.20553C2.31258 8.0946 2.35702 7.95464 2.34848 7.81281C2.3363 7.60564 2.3363 7.39794 2.34848 7.19077C2.35702 7.04894 2.31258 6.90899 2.22379 6.79806L1.20689 5.5246C1.32357 5.15377 1.47298 4.79404 1.65335 4.44965L3.27079 4.26619C3.41183 4.25054 3.54206 4.18313 3.63627 4.077C3.77422 3.92186 3.92114 3.77494 4.07629 3.63699C4.18283 3.54271 4.25052 3.41219 4.26619 3.27079L4.44607 1.65335C4.79041 1.4729 5.15015 1.32348 5.52102 1.20689L6.79233 2.22379C6.90325 2.31258 7.04321 2.35702 7.18504 2.34848C7.39221 2.3363 7.59991 2.3363 7.80708 2.34848C7.94891 2.35702 8.08886 2.31258 8.19979 2.22379L9.47325 1.20689C9.84408 1.32357 10.2038 1.47298 10.5482 1.65335L10.7317 3.27079C10.7473 3.41183 10.8147 3.54206 10.9208 3.63627C11.076 3.77422 11.2229 3.92114 11.3609 4.07629C11.4551 4.18241 11.5853 4.24982 11.7263 4.26548L13.3445 4.44535C13.525 4.7897 13.6744 5.14944 13.791 5.5203L12.7741 6.79161C12.6844 6.90347 12.6399 7.04486 12.6494 7.18791H12.6515Z" fill="#646464"/></svg>
+                    </button>
+
+                    <MDBDropdown>
                     <MDBDropdownToggle
                       tag="button"
                       className="btn btn-link p-0 profile-top"
@@ -249,10 +411,7 @@ const AuthLayout = ({ children }) => {
                       <a href="#">
                         {(currentUser && currentUser.profile_image) ? (
                           <img
-                            src={(currentUser && currentUser.profile_image) ? process.env.REACT_APP_BACKEND+currentUser.profile_image : 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar.jpg'}
-                            className="rounded-circle"
-                            alt="Profile"
-                            style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                            src={(currentUser && currentUser.profile_image) ? process.env.REACT_APP_BACKEND+currentUser.profile_image : 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar.jpg'} alt="Profile" style={{width: "35px", height: "35px", objectFit: "cover", borderRadius: "8px", border: "1px solid #fff" }}
                           />
                         ) : (
                           <span className="w-11 rounded-circle profile-image-span">
@@ -271,7 +430,7 @@ const AuthLayout = ({ children }) => {
                         <span>Profile</span>
                       </Link>
                       <Link
-                        to="/ring-central-settings"
+                        to="/settings"
                         className="dropdown-item"
                         style={{ textDecoration: "none" }}
                       >
@@ -287,14 +446,19 @@ const AuthLayout = ({ children }) => {
                         <span>Logout</span>
                       </Link>
                     </MDBDropdownMenu>
-                  </MDBDropdown>
+                    </MDBDropdown>
+                  </div>
                 </div>
               </nav>
             </header>
-            <main className="mb-5" style={{ marginTop: "90px" }}>
-              <div className="container">
+            {isMobileView && isMobileSidebarOpen && (
+              <div className="mobile-sidebar-backdrop" onClick={() => setIsMobileSidebarOpen(false)} />
+            )}
+            <main className="mb-0" style={{ marginTop: "60px" }}>
+              <div className="container-fluid app-content-container">
                 {children}
               </div>
+              <Footer />
             </main>
           </div>
         </Fragment>

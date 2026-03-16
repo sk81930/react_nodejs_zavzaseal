@@ -1,0 +1,48 @@
+.crm-container {
+  background: transparent;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+.crm-tabs {
+  display: flex;
+  gap: 2.2rem;
+  margin-bottom: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(40, 168, 226, 0.08);
+  padding: 0.5rem 1.2rem 0 1.2rem;
+  align-items: center;
+}
+
+.crm-tabs button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222b45;
+  padding: 1.1rem 1.2rem 0.7rem 1.2rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  transition: color 0.2s, border-bottom 0.2s;
+  outline: none;
+  margin-bottom: -3px;
+}
+
+.crm-tabs button.active {
+  color: #1976d2;
+  font-weight: 600;
+  border-bottom: 3px solid #1976d2;
+  background: none;
+}
+
+.crm-tabs button:not(.active):hover {
+  color: #1976d2;
+  background: none;
+}
+
+.crm-tab-content {
+  margin-top: 1.5rem;
+} 

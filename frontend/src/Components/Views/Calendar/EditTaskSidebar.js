@@ -1,43 +1,40 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import { Modal, Button, Form, Row, Col, ListGroup } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./EditTaskSidebar.scss";
 import NotesComponent from "./NotesComponent";
 import RightComponent from "./RightComponent";
 import CommentsComponent from "./CommentsComponent";
-import { IoCloseOutline } from "react-icons/io5";
-import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 import { GoLink } from "react-icons/go";
 import agent from '../../../agent';
 import moment from 'moment';
 import SideModal from '../../Layouts/SideModal';
-
-import { CiEdit } from "react-icons/ci";
-import { CiImageOn } from "react-icons/ci";
-
 import { LOADER_SHOW } from '../../../constants/actionTypes';
 
 export const callLoaderShow = (type) => ({
   type: LOADER_SHOW,
-  payload: {
-    type
-  }
+  payload: { type }
 });
 
-const EditTaskSidebar = ({ currentUser, isOpen, setIsOpen, onClose, event, dealsData, crewMembers, addTaskError, addTaskSuccess, clearFlash, setLoadEvent }) => {
-  const [isClosing, setIsClosing] = useState(false);
+const EditTaskSidebar = ({
+  currentUser,
+  isOpen,
+  setIsOpen,
+  event,
+  crewMembers,
+  setLoadEvent
+}) => {
+
+  const navigate = useNavigate();
   const [taskData, setTaskData] = useState(null);
   const [notesData, setNotesData] = useState(null);
   const [commentsData, setCommentsData] = useState(null);
 
-  const [onHide, setOnHide] = useState(false);
-
   const [status, setStatus] = useState("In-Progress");
   const [priority, setPriority] = useState("High");
   const [selectedCrewMembers, setSelectedCrewMembers] = useState([]);
-  
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -48,36 +45,20 @@ const EditTaskSidebar = ({ currentUser, isOpen, setIsOpen, onClose, event, deals
   const [files, setFiles] = useState([]);
   const [images, setImages] = useState([]);
   const [checkedProducts, setCheckedProducts] = useState([]);
-
   const [commentText, setCommentText] = useState("");
 
   const dispatch = useDispatch();
 
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-
-    setCheckedProducts((prevChecked) => {
-      if (checked) {
-        // Add product to checkedProducts
-        return [...prevChecked, value];
-      } else {
-        // Remove product from checkedProducts
-        return prevChecked.filter((id) => id !== value);
-      }
-    });
-  };
-
-
-  
+  /* ================================
+     RESET MODAL WHEN OPENED
+  ================================= */
 
   useEffect(() => {
     if (isOpen) {
-      // Reset all states when modal opens
       setTaskData(null);
       setStatus("In-Progress");
       setPriority("High");
       setSelectedCrewMembers([]);
-      setDropdownOpen(false);
       setStartDate(null);
       setEndDate(null);
       setNoteText("");
@@ -89,146 +70,58 @@ const EditTaskSidebar = ({ currentUser, isOpen, setIsOpen, onClose, event, deals
       setCommentText("");
     }
   }, [isOpen]);
-  useEffect(() => {
-    if (successMsg) {
 
-      setLoadEvent(true);
-      
-      setTimeout(function(){
-        setSuccessMsg(null);
-        setOnHide(true);
-      },2000)
-      
-    }
-  }, [successMsg]);
+  /* ================================
+     LOAD TASK DATA
+  ================================= */
 
   
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
-
-    const formDataNew = new FormData();
-
-    // Append non-file data to FormData
-    formDataNew.append("status", status);
-    formDataNew.append("priority", priority);
-    formDataNew.append("start_datetime", startDate ? startDate.toISOString() : null);
-    formDataNew.append("end_datetime", endDate ? endDate.toISOString() : null);
-
-
-    if(commentText != ""){
-       formDataNew.append("commentText", commentText);
-    }
-
-    if(selectedCrewMembers.length === 0){
-       setErrorMsg("Please assign at least 1 crew member");
-       return;
-    }
-
-    
-    // Append crew members as individual fields in FormData
-    selectedCrewMembers.forEach(member => {
-      formDataNew.append("crew_members[]", member.value); // Using '[]' to append as an array
-    });
-
-    // Append noteText and files/images
-    formDataNew.append("noteText", noteText);
-
-    // Check and append files (files should be an array)
-    if (files && files.length > 0) {
-      files.forEach(file => {
-        formDataNew.append("noteFiles[]", file); // Append each file individually
-      });
-    }
-
-    // Check and append images (images should be an array)
-    if (images && images.length > 0) {
-      images.forEach(image => {
-        formDataNew.append("noteImages[]", image); // Append each image individually
-      });
-    }
-
-    checkedProducts.forEach(checkedProduct => {
-      formDataNew.append("checkedProduct[]", checkedProduct); // Using '[]' to append as an array
-    });
-
-    dispatch(callLoaderShow(true))
-
-    try {
-      // Assuming agent.Auth.editTask handles FormData
-      const editData = await agent.Auth.editTask(formDataNew, taskData.id);
-      dispatch(callLoaderShow(false))
-
-      if(editData && editData.isSuccess){
-
-          setSuccessMsg(editData.message);
-          
-      }
-
-    } catch (error) {
-      dispatch(callLoaderShow(false))
-      if (error.response && error.response.body && error.response.body.message) {
-          setErrorMsg(error.response.body.message);
-      }else{
-        setErrorMsg(error.message);
-      }
-      
-      // Handle error, maybe show a message to the user
-    }
-  };
-
   const getTaskById = async (taskId) => {
     try {
-      const taskResponse = await agent.Auth.getTaskById(taskId);
+      const response = await agent.Auth.getTaskById(taskId);
 
-      if (taskResponse && taskResponse.data && taskResponse.data.id) {
-        setTaskData(taskResponse.data);
-      } else {
-        setTaskData(null);
+      if (response?.data?.id) {
+        const data = response.data;
+
+        setTaskData(data);
+
+        // 🔥 Load DATE fields properly
+        setStartDate(data.start_date ? moment(data.start_date) : null);
+        setEndDate(data.end_date ? moment(data.end_date) : null);
+
+        if (data.products) {
+          const paidProducts = data.products
+            .filter(product => product.status === "paid")
+            .map(product => product.id.toString());
+          setCheckedProducts(paidProducts);
+        }
       }
     } catch (error) {
-     // console.log(error.message);
       setTaskData(null);
     }
   };
+
   const getNotes = async (taskId) => {
     try {
-      const notesResponse = await agent.Auth.getNotes(taskId);
-
-
-      if (notesResponse && notesResponse.data && notesResponse.data.length > 0) {
-        setNotesData(notesResponse.data);
-      } else {
-        setNotesData([]);
-      }
+      const response = await agent.Auth.getNotes(taskId);
+      setNotesData(Array.isArray(response?.data) ? response.data : []);
     } catch (error) {
-     // console.log(error.message);
       setNotesData([]);
     }
   };
+
   const getComments = async (taskId) => {
     try {
-      const commentsResponse = await agent.Auth.getComments(taskId);
-
-     // console.log(commentsResponse)
-      if (commentsResponse && commentsResponse.data && commentsResponse.data.length > 0) {
-        setCommentsData(commentsResponse.data);
-      } else {
-        setCommentsData([]);
-      }
+      const response = await agent.Auth.getComments(taskId);
+      setCommentsData(Array.isArray(response?.data) ? response.data : []);
     } catch (error) {
-      //console.log(error.message);
       setCommentsData([]);
     }
   };
 
-
-
   useEffect(() => {
-    if (event && event.id) {
-      //console.log(currentUser)
+    if (event?.id) {
       getTaskById(event.id);
       getNotes(event.id);
       getComments(event.id);
@@ -237,33 +130,85 @@ const EditTaskSidebar = ({ currentUser, isOpen, setIsOpen, onClose, event, deals
     }
   }, [event]);
 
-  useEffect(() => {
-    if (taskData && taskData.id) {
-      const paidProducts = taskData.products
-        .filter(product => product.status === "paid")
-        .map(product => product.id.toString()); // Assuming you want the IDs as strings
+  /* ================================
+     SUBMIT EDIT
+  ================================= */
 
-      // Set the checked products state
-      setCheckedProducts(paidProducts);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    // if (selectedCrewMembers.length === 0) {
+    //   setErrorMsg("Please assign at least 1 crew member");
+    //   return;
+    // }
+
+    const formDataNew = new FormData();
+
+    const start_date = startDate ? startDate.format("YYYY-MM-DD") : null;
+    const end_date = endDate ? endDate.format("YYYY-MM-DD") : null;
+
+    formDataNew.append("status", status);
+    formDataNew.append("priority", priority);
+    formDataNew.append("start_date", start_date);
+    formDataNew.append("end_date", end_date);
+
+    if (commentText) {
+      formDataNew.append("commentText", commentText);
     }
-  }, [taskData]);
 
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime).format("YYYY-MM-DDTHH:mm");
+    selectedCrewMembers.forEach(member => {
+      formDataNew.append("crew_members[]", member.value);
+    });
+
+    formDataNew.append("noteText", noteText);
+
+    files.forEach(file => {
+      formDataNew.append("noteFiles[]", file);
+    });
+
+    images.forEach(image => {
+      formDataNew.append("noteImages[]", image);
+    });
+
+    checkedProducts.forEach(product => {
+      formDataNew.append("checkedProduct[]", product);
+    });
+
+    dispatch(callLoaderShow(true));
+
+    try {
+      const editData = await agent.Auth.editTask(formDataNew, taskData.id);
+
+      dispatch(callLoaderShow(false));
+
+      if (editData?.isSuccess) {
+        setSuccessMsg(editData.message);
+        await getNotes(taskData.id);
+        await getComments(taskData.id);
+        setLoadEvent(true);
+      }
+
+    } catch (error) {
+      dispatch(callLoaderShow(false));
+      setErrorMsg(error.message);
+    }
   };
 
-
+  /* ================================
+     COMPONENT PARAMS
+  ================================= */
 
   const rightCompParams = {
     status, setStatus,
     priority, setPriority,
     selectedCrewMembers, setSelectedCrewMembers,
-    dropdownOpen, setDropdownOpen,
     startDate, setStartDate,
     endDate, setEndDate,
     handleSubmit,
     currentUser
-  }
+  };
 
   const notesCompParams = {
     noteText, setNoteText,
@@ -271,78 +216,211 @@ const EditTaskSidebar = ({ currentUser, isOpen, setIsOpen, onClose, event, deals
     images, setImages,
     notesData,
     currentUser
-  }
+  };
+
   const commentCompParams = {
     commentText, setCommentText,
     taskData,
     commentsData,
     currentUser
-  }
+  };
+
+  const lead = taskData?.lead_data;
+  const leadFullName = lead?.full_name || "";
+  const leadDisplayId = lead?.lead_id || "";
+  const leadAddress = lead?.address || "";
+  const leadJson = lead?.lead_json_data || {};
+  const leadPhone = leadJson?.PHONE?.length > 0 ? leadJson.PHONE[0].VALUE : "";
+  const leadEmail = leadJson?.EMAIL?.length > 0 ? leadJson.EMAIL[0].VALUE : "";
+  const estimateRef = lead?.estimate_id || "";
+  const assignedCrew = taskData?.crew_members || [];
+
+  /* ================================
+     RENDER
+  ================================= */
 
   return (
-    <>
-      <SideModal isOpen={isOpen} setIsOpen={setIsOpen} onHide={onHide} setOnHide={setOnHide} showButton={true} handleSubmit={handleSubmit} classDef="editTaskContainer" >
-          <div className="taskContiner">
-            <div className="taskContinerInner left-task-content">
-              <MDBContainer>
-                <div className="card-container">
-                  {/* Header Section */}
-                  <div className="header">
-                    <div className="headerInner d-flex justify-content-space-between align-items-center">
-                      <h2>{taskData?.title || "Task Title"}</h2>
-                      <GoLink style={{ fontSize: "23px" }} />
-                    </div>
-                    <div className="headerInnerBottom">
-                      <p>{taskData ? moment(taskData.start_datetime).format("DD MMMM YYYY") : "N/A"}</p>
-                      <span>by {taskData ? taskData.user_first_name + " " + taskData.user_last_name : "Unknown"}</span>
-                    </div>
+    <SideModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      showButton={true}
+      handleSubmit={handleSubmit}
+      classDef="editTaskContainer"
+    >
+      <div className="taskContiner">
+
+        <div className="taskContinerInner left-task-content">
+
+          {taskData && (
+            <Fragment>
+
+              {/* Header */}
+              <div className="taskgridBox tasktop-box mb-3">
+                <div className="header">
+                  <div className="headerInner d-flex justify-content-between align-items-center">
+                    <h2>
+                      {leadFullName}
+                      {leadDisplayId && (
+                        <span className="ms-2 text-muted">#{leadDisplayId}</span>
+                      )}
+                    </h2>
+                    <GoLink style={{ fontSize: "23px" }} />
                   </div>
 
-                  <div className="notes-section">
-                    <NotesComponent {...notesCompParams}/>
-                  </div>
+                  <div className="headerInnerBottom">
+                    <p className="fw-normal text-muted">
+                      <span className="startdate">{
+                        taskData?.start_date
+                          ? moment(taskData.start_date).format("DD MMMM YYYY")
+                          : "N/A"
+                      }</span>
+                      <span className="mx-2">|</span>
+                      <span className="enddate">{
+                        taskData?.end_date
+                          ? moment(taskData.end_date).format("DD MMMM YYYY")
+                          : "N/A"
+                      }</span>
+                    </p>
 
+                    {estimateRef && (
+                      <div className="text-muted small">
+                        Estimate: E-000{estimateRef}
+                      </div>
+                    )}
 
-                  <div className="purchases-section mt-5">
-                    <h4>Purchases:</h4>
-                      {taskData?.products?.map((product) => (
-                        <div key={product.id} className="form-group">
-                          <input
-                            type="checkbox"
-                            id={product.product_name}
-                            name="product_paid"
-                            value={product.id}
-                            onChange={handleCheckboxChange}
-                            checked={checkedProducts.includes(product.id.toString())} // Step 4: Make the checkbox controlled
-                          />
-                          <label htmlFor={product.product_name} className="text-sm ms-1 mt-1">
-                            {product.product_name}
-                          </label>
-                        </div>
-                      ))}
-                  </div>
-                  {/* Comments Section */}
-                  <div className="comments-section mt-5">
-                    <h4>Comments</h4>
-                    <CommentsComponent {...commentCompParams}/>
-                  </div>
+                    {leadAddress && (
+                      <div className="address-bar mt-4 mb-2">
+                        <span className="text-muted small">Address:</span>
+                        <div className="info-txt">{leadAddress}</div>
+                      </div>
+                    )}
+                    {leadPhone && (
+                      <div className="phone-bar my-2">
+                        <span className="text-muted small">Phone Number:</span>
+                        <div className="info-txt">{leadPhone}</div>
+                      </div>
+                    )}
 
+                    {leadEmail && (
+                      <div className="email-bar mt-2 mb-4">
+                        <span className="text-muted small">Email Address</span>
+                        <div className="info-txt">{leadEmail}</div>
+                      </div>
+                    )}
+                    <span className="d-none">
+                      by {taskData?.user_first_name} {taskData?.user_last_name}
+                    </span>
+                  </div>
                 </div>
-              </MDBContainer>
+
+                <div className="notes-section">
+                  <NotesComponent {...notesCompParams} />
+                </div>
+              </div>
+
+              <div className="taskgridBox comments-box">
+                <div className="comments-section">
+                  <CommentsComponent {...commentCompParams} />
+                </div>
+              </div>
+
+            </Fragment>
+          )}
+
+        </div>
+
+        <div className="taskContinerInner right-task-content">
+          <div className="taskgridringh">
+            <RightComponent
+              crewMembers={crewMembers}
+              taskData={taskData}
+              {...rightCompParams}
+            />
+            {assignedCrew.length > 0 && (
+            <div className="assigned-crew-box">
+              <h4 className="assigned-crew-title">Assigned Crew Members</h4>
+              <div className="assigned-crew-main">
+                <div className="assigned-crew-top">
+                  <div className="assigned-crew-mini-avatars">
+                    {assignedCrew.slice(0, 3).map((member, idx) => {
+                      const firstName = member?.first_name || member?.user?.first_name || "";
+                      const lastName = member?.last_name || member?.user?.last_name || "";
+                      const fullName = `${firstName} ${lastName}`.trim() || member?.name || "Crew Member";
+                      const imagePath = member?.profile_image || member?.user?.profile_image;
+                      const imageUrl = imagePath ? `${process.env.REACT_APP_BACKEND}${imagePath}` : "";
+
+                      return (
+                        <div className="assigned-crew-mini-avatar" key={`${fullName}-mini-${idx}`}>
+                          {imageUrl ? (
+                            <img src={imageUrl} alt={fullName} />
+                          ) : (
+                            <span>{fullName[0] ? fullName[0].toUpperCase() : "?"}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {currentUser?.role !== "crew" && (
+                  <button
+                    type="button"
+                    className="view-all-btn"
+                    onClick={() =>
+                      navigate("/crew", {
+                        state: {
+                          projectId: taskData?.id,
+                          managerId: currentUser?.id
+                        }
+                      })
+                    }
+                  >
+                    View all
+                  </button>
+                )}
+                  
+                </div>
+
+                <div className="assigned-crew-list">
+                  {assignedCrew.slice(0, 5).map((member, idx) => {
+                    const firstName = member?.first_name || member?.user?.first_name || "";
+                    const lastName = member?.last_name || member?.user?.last_name || "";
+                    const fullName = `${firstName} ${lastName}`.trim() || member?.name || "Crew Member";
+                    const crewId = member?.employee_id || member?.crew_id || member?.id || "N/A";
+                    const imagePath = member?.profile_image || member?.user?.profile_image;
+                    const imageUrl = imagePath ? `${process.env.REACT_APP_BACKEND}${imagePath}` : "";
+
+                    return (
+                      <div className="assigned-crew-item" key={`${crewId}-${idx}`}>
+                        <div className="assigned-crew-avatar">
+                          {imageUrl ? (
+                            <img src={imageUrl} alt={fullName} />
+                          ) : (
+                            <span>{fullName[0] ? fullName[0].toUpperCase() : "?"}</span>
+                          )}
+                        </div>
+                        <div className="assigned-crew-meta">
+                          <p className="assigned-crew-name">{fullName}</p>
+                          <p className="assigned-crew-id">ID: FR-{crewId}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-            <div className="taskContinerInner right-task-content">
-              <RightComponent crewMembers={crewMembers} taskData={taskData} {...rightCompParams} />
-              {/* Error Message Banner */}
-              {errorMsg ? 
-                  <div className="alert alert-danger" role="alert">{errorMsg}</div>
-              : <Fragment /> }
-              {successMsg ? 
-                <div className="alert alert-success" role="alert">{successMsg}</div>
-              : <Fragment /> }
-            </div>
+            )}
+            {errorMsg && (
+              <div className="alert alert-danger">{errorMsg}</div>
+            )}
+
+            {successMsg && (
+              <div className="alert alert-success">{successMsg}</div>
+            )}
           </div>
-      </SideModal>
-    </>
+        </div>
+
+      </div>
+    </SideModal>
   );
 };
 

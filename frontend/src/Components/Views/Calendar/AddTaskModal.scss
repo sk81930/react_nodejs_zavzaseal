@@ -1,35 +1,217 @@
+.modal-step-1 {
+  .modal-footer {
+    padding-left: 0px !important;
+  }
+  .modal-step {
+    margin-top: 0px !important;
+    padding: 0px !important;
+  }
+}
+.add-task {
+  * {
+    font-family: var(--font-family);
+  }  
+  .btn-close {
+    font-size: 12px !important;
+    padding: 0;
+    margin: 0 0 0 auto;
+  }
+  .form-label {
+    font-size: 0.8rem;
+  }
+
+  .modal-step {
+    gap: 0;
+    margin-top: 30px;
+    padding: 0;
+    .css-1u9des2-indicatorSeparator {
+      display: none;
+    }       
+    .project-select__menu-list {
+      padding-top: 0px;
+      .project-select__option--is-selected {
+        background: #cbe9f7 !important;
+      }
+      .project-select__option--is-focused {
+        background: #ECF5FA !important;
+      }
+      .project-select__option {
+        padding: 8px 15px;
+        font-size: 14px;
+        color: #000 !important;
+        &:hover {
+          background: #ECF5FA !important;
+        }
+        .usermain {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+        }
+        .username {
+          font-size: 14px;
+          font-weight: 500;
+          margin-bottom: 0px !important;
+          color: #000 !important;
+        }
+        .usertxt {
+          font-size: 12px;
+          color: #6c757d;
+        }
+        > div {
+          padding: 0px !important;
+          
+        }
+      }
+    }
+    .css-t3ipsp-control:hover, .css-t3ipsp-control, .css-1ll44ll-MuiOutlinedInput-notchedOutline {
+      border-color: #ECF5FA !important;
+      box-shadow: none !important;      
+    }
+    .css-13cymwt-control, .MuiInputBase-root {
+      border: 1px solid #ECF5FA;
+      border-radius: 8px;
+      min-height: 45px;
+      background: #ECF5FA;
+      .MuiButtonBase-root {
+        padding: 0 8px 0 15px;
+      }
+    }
+    input {
+      padding: 0 !important;
+      font-weight: 400;
+      font-size: 14px !important;
+      color: #646464 !important;
+    }
+  }
+  svg.MuiSvgIcon-root {
+    font-size: 20px;
+    color: #4f4f4f;
+  } 
+  .assign_crew {
+    .css-qr46ko {
+      padding: 0px;
+      .css-tr4s17-option {
+        background: #f4f4f3 !important;
+      }
+    }
+  }
+  .modal-dialog {
+    --bs-modal-width: 550px;
+  }
+  .modal-content {
+    padding: 30px;
+    --bs-modal-bg: #F8F9FB;
+    .modal-header {      
+      --bs-modal-header-padding: 0px 0px 12px 0px;
+      --bs-modal-header-border-color: #ddd;
+      .h4 {
+        font-weight: 400;
+        font-size: 16px;
+        color: #181819;
+      }
+      .btn-close {
+        &:focus {
+          box-shadow: none;
+        }
+        &:focus-visible {
+          outline: none;
+        }
+      }
+    }
+    .modal-body {
+      padding: 0px;
+      .button-group {
+        .option-btn {
+          &:nth-child(2) {
+            border-color: #28a8e2 !important;
+            opacity: 1;
+          }
+        }
+      }
+      .modal-step .btn-light,
+      .product_wrap {
+        background: #f2f2f2;
+        padding: 0.5rem 0.875rem;
+        border: none !important;
+        min-height: 48px;
+        color: #757575;
+        font-size: 1rem !important;
+        text-transform: none;
+      }
+    }
+    .modal-footer {
+      justify-content: flex-start;
+      border-top: none;
+      padding: 25px 0 0 0;
+      .btn {
+        width: auto;
+        max-width: 100%;
+        min-height: 33px;
+        font-size: 12px;
+        border: none !important;
+        background: #2EA7DF;
+        box-shadow: none;
+        margin: 0;
+        min-width: 60px;
+        &:hover, &:focus, &:active, &:nth-child(2) {
+          background: #2392c5 !important;
+          opacity: 1; 
+        }
+      }
+    }
+    .select-cont {
+      display: flex;
+      padding: 0 15px;
+      .project-select__placeholder {font-size: 14px;
+        color: #646464 !important;
+      }
+      * {font-size: 12px;line-height:17px;
+        color: #000 !important;
+      }
+    }
+  }
+}
+
 .modal-step {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
+  label {
+    color: #181819 !important;
+    margin-bottom: 8px;
+    font-size: 16px !important;
+  }
+  .project-h4 {
+    font-weight: 400;
+    font-size: 16px;
+    color: #181819;
+    margin:0;
+  }
   .button-group {
     display: flex;
     gap: 1rem;
 
     .option-btn {
-        flex: 1 1;
-        padding: 1rem;
-        text-align: center;
-        font-size: 12px;
-        transition: all 0.3s ease;
-        width: 320.5px;
-        min-height: 98px !important;
-        border: 2px solid #BDBDBD;
-        border-radius: 4px;
-        background: transparent;
-        color: #000;
+      flex: 1 1;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.7em;
+      transition: all 0.3s ease;
+      width: 320.5px;
+      min-height: 98px !important;
+      border: 2px solid #bdbdbd;
+      border-radius: 4px;
+      background: transparent;
+      color: #4f4f4f;
 
       &.active {
-        background-color: #d7deeb;
-        color: #000;
-        border: 2px solid #28A8E2;
+        background-color: #e2eaf7;
+        border: 2px solid #28a8e2;
       }
 
       &:hover {
-        background-color: #d7deeb;
-        color: #000;
-        border: 2px solid #28A8E2;
+        background-color: #e2eaf7;
+        border: 2px solid #28a8e2;
       }
     }
   }
@@ -37,7 +219,7 @@
   .date-time-group {
     display: flex;
     justify-content: space-between;
-
+    margin-bottom: 6px !important;
     & > div {
       flex: 1;
       margin-right: 0.5rem;
@@ -60,15 +242,276 @@
       text-decoration: underline;
     }
   }
-}
-.modal-footer {
-  justify-content: flex-start;
-  border-top: none;
-  .btn{
-      width: 140px;
-      max-width: 100%;
-      min-height: 37px;
-      font-size: 13px;
-      border: none;
+  .date-time-group input {
+    padding: 9.5px 0.5rem 9.5px 0px;
+    min-height: 26px;
+    color: #4f4f4f !important;
+    &::placeholder {
+      font-size: 14px;
+      color: #808080 !important;
+      opacity: 9;
+    }
   }
+  .color_wraps label {
+    font-size: 14px !important;
+    color: #808080 !important;
+  }
+  .product_wrap {
+    border-radius: 0.75rem;
+    min-height: 60px !important;
+    input {
+      border: 1px solid #e0e0e0;
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: 1.5px solid transparent;
+      &::placeholder {
+        font-size: 14px;
+      }
+      &:focus {
+        box-shadow: none;
+        outline: 1.5px solid #3b71ca;
+      }
+      &:focus-visible {
+        outline: 1.5px solid #3b71ca;
+      }
+    }
+    .btn-danger {
+      border-radius: 100%;
+      width: 25px;
+      height: 25px !important;
+      font-size: 12px;
+      box-shadow: none;
+    }
+  }
+  .color_wraps {
+    border: 1px solid #ffffff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    min-height: 45px;
+    background: #ECF5FA;
+    input {
+      width: 20px;
+      height: 20px;
+      border-radius: 100%;
+    }
+    label {
+      width: 100%;
+      padding-left: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #646464 !important;
+    }
+  }
+  .css-b62m3t-container {
+    /*min-height:40px !important;
+		.css-13cymwt-control { 
+			padding:3.84px .5rem;
+		}
+		.css-hlgwow {
+			padding:0px;
+			.css-1jqq78o-placeholder{
+				&::focus-visible{
+				 outline:none;
+				}
+			}
+			.css-1dimb5e-singleValue{
+			 padding:0px 5px;
+			}
+		}
+		.css-19bb58m{
+			margin:0px;
+			padding:0px;
+		}*/
+    label {
+      padding-left: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #4f4f4f !important;
+    }
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root input:hover,
+.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root:hover,
+.css-1ll44ll-MuiOutlinedInput-notchedOutline:hover,
+.css-b62m3t-container:focus-visible,
+.fc-event:focus {
+  border: none !important;
+  outline: none;
+  box-shadow: none;
+}
+
+@media (max-width: 767px) {
+  .modal-content {
+    .modal-body {
+      .modal-step {
+        .color_wraps {
+          input {
+            width: 16px;
+            height: 16px;
+          }
+          label {
+            margin-top: 4px;
+          }
+        }
+        .btn-light {
+          font-size: 0.9rem !important;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .modal-content {
+    .modal-header {
+      padding: 12px 0px;
+      .h4 {
+        font-size: 1.13rem;
+      }
+    }
+    .modal-body {
+      padding: 12px 0px;
+    }
+    .modal-footer {
+      padding: 12px 10px;
+      .btn {
+        width: 80px !important;
+        min-height: 35px;
+      }
+    }
+  }
+}
+@media(max-width:400px){
+	.modal-step .button-group {
+	  flex-direction: column;
+	   .option-btn{
+		   width:100%;
+		}
+	}
+}
+
+
+.MuiDialog-paper {
+  border-radius: 8px;
+  box-shadow: 0px 2px 2.4px 0px #00000017;
+  .MuiPickersToolbar-content {
+    position: absolute;
+    left: 20px;
+    bottom: 10px;
+    border-radius: 8px;
+    padding: 8px 15px;
+    border: 1px solid #dddddd;
+    width: max-content;
+
+    * {
+      font-weight: 400;
+      font-size: 12px;
+      color: #646464;
+    }
+  }
+  .MuiDialogActions-root {
+    border-top: 1px solid #DDD;
+    padding: 20px 20px 10px !important;
+
+    button {
+      background: #ccefff;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-weight: 400;
+      font-size: 12px;
+      color: #2EA7DF;
+
+      &:last-child {
+        background: #2EA7DF;
+        color: #fff;
+      }
+    }
+  }
+  .MuiDateCalendar-root {
+    height: auto;
+    .MuiPickersSlideTransition-root {
+      min-height: 200px;
+    }
+  }
+  .MuiDayCalendar-weekContainer {
+    .Mui-selected {
+      background: #2EA7DF !important;
+      border-radius: 8px !important;
+      color: #fff !important;
+    }
+    button.MuiPickersDay-today {
+      border-color: #2ea7df !important;
+      color: #2ea7df;
+      border-radius: 8px !important;
+    }
+  }
+  .MuiDayCalendar-weekDayLabel, button.MuiPickersDay-root {
+    color: #000;
+    font-size: 12px;
+  }
+  .MuiPickersToolbar-root {
+    padding: 0;
+    height: 0;
+    width:0;
+  }
+  .MuiPickersCalendarHeader-root {
+    padding: 20px !important;
+    margin: 0 0 10px 0;
+    position: relative;
+    max-height: unset;
+    border-bottom: 1px solid #DDDDDDDD;
+    .MuiPickersCalendarHeader-label {
+      font-weight: 400;
+      font-size: 12px;
+      color: #2EA7DF;
+      margin: 0 !important;
+    }
+    .MuiPickersCalendarHeader-labelContainer {
+      margin: 0 auto;
+      position: relative;
+      z-index: 9;
+    }
+    .MuiPickersArrowSwitcher-root {
+      position: absolute;
+      width: 100%;
+      justify-content: space-between;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      z-index: 0;
+      padding: 0 20px;
+      align-items: center;
+      button {
+        border: 1px solid #DDDDDDDD;
+        border-radius: 8px;
+        margin: 0 !important;
+        width: 30px;
+        height: 30px;
+        color: #646464DD;
+        svg {
+          width: 17px;
+        }
+        &:hover {
+          background: #ccefff;
+          color: #2EA7DF;
+          border-color: #ccefff;
+        }
+      }
+    }
+    .MuiPickersCalendarHeader-switchViewButton {
+      padding: 0;
+      background: #fff !important;
+      svg {
+        color: #2ea7df;
+        position: relative;
+        top: -1px;
+      }
+    }
+  }    
 }

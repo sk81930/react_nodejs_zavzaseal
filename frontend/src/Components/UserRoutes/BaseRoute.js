@@ -53,7 +53,7 @@ const BaseRoute = (props) => {
                           ?
                            <Route path="*" element={<Login />} />
                           :
-                          '' 
+                          <Route path="login" element={<Login />} />
                     }
             </Fragment>
         </Routes>

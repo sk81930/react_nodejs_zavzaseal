@@ -164,7 +164,7 @@ const MyProfile = (props) => {
 
 
   return (
-    <MDBContainer className="mt-5 create_user">
+    <MDBContainer className="mt-5 create_user roles_maincard profile_mainwrap">
       <MDBCard>
         <MDBCardHeader>
           <h4>My Profile</h4>
@@ -343,7 +343,7 @@ const MyProfile = (props) => {
 
               <MDBCol md="12" className="d-flex gap-4">
                 <MDBBtn type="submit" color="primary" className="w-20">Submit</MDBBtn>
-                <MDBBtn type="button" color="secondary" className="w-20"onClick={handleCancel}>Cancel</MDBBtn>
+                <MDBBtn type="button" color="secondary" className="cancel_btn_wrap w-20"onClick={handleCancel}>Cancel</MDBBtn>
               </MDBCol>
             </form>
           )}  

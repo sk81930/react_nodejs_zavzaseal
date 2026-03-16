@@ -36,22 +36,25 @@
     .modal-body {
       padding: 0;
       overflow: auto;
+      height: 100vh;
+      z-index:99;
+      background: #f2f5f8;
     }
 
   }
 
   .modal-header {
-    position: absolute;
-    left: -59px;
-    top: 11px;
-    transform: rotate(-90deg);
-    margin-bottom: 10px !important;
-    border-radius: 40px 40px 0px 0px;
-    background: #28a8e2;
-    padding: 9px 0px !important;
-    width: 52px;
-    align-items: center;
-    z-index: 1;
+        position: absolute;
+        left: -45px;
+        top: 1px;
+        transform: rotate(-90deg);
+        margin-bottom: 10px !important;
+        border-radius: 40px 40px 0px 0px;
+        background: #28a8e2;
+        padding: 12px 5px 12px 5px !important;
+        width: 47px;
+        align-items: center;
+        z-index: 1;
 
     button {
       margin: 0;

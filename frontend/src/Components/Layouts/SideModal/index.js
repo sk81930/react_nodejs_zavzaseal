@@ -54,7 +54,7 @@ const SideModal = ({isOpen,setIsOpen,onHide,setOnHide,showButton,classDef,handle
       >
         <Modal.Header className="p-1 w-7 d-flex justify-content-center">
           <Button type="button" variant="link" className="custom-close-btn" onClick={handleClose}>
-            <IoCloseOutline style={{ fontSize: "36px" }} />
+            <IoCloseOutline style={{ fontSize: "26px" }} />
           </Button>
         </Modal.Header>
         <Modal.Body>

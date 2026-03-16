@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn, MDBRow, MDBCol } from '../../../mdb';
+import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 
 import agent from '../../../agent';
 import { ROLES } from '../../../constants/actionTypes';
@@ -91,7 +91,7 @@ const Roles = (props) => {
 
   return (
     <MDBContainer>
-      <MDBCard className="mt-4">
+      <MDBCard className="roles_maincard mt-4">
         <MDBCardHeader>
           <h3>Roles</h3>
         </MDBCardHeader>

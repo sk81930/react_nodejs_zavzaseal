@@ -1,11 +1,10 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useDispatch } from 'react-redux';
 import "./NotesComponent.scss";
 import { GrAttachment } from "react-icons/gr";
 import { FaRegImage, FaFile, FaDownload, FaEye } from "react-icons/fa";
 import { CiFileOn } from "react-icons/ci";
-
-import SideModal from '../../Layouts/SideModal';
+import { FiEdit2 } from "react-icons/fi";
 import { OPEN_PROFILE_MODAL } from '../../../constants/actionTypes';
 
 export const openProfileModal = (userId) => ({
@@ -85,13 +84,8 @@ const NotesComponent = ({noteText, setNoteText, files, setFiles, images, setImag
       // Check if the file is an image based on the file extension
       const isImage = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'].includes(fileExtension);
 
-      const handleDownload = (e, path, fileName) => {
-        e.preventDefault();
-        window.open(process.env.REACT_APP_BACKEND + path, "_blank");
-      };
-
     return (
-      <div key={attachment.id} className="attachment-wrap mt-2 me-2 cursor-pointer border rounded-md overflow-hidden position-relative">
+      <div key={attachment.id} className="attachment-wrap mt-0 me-2 cursor-pointer border rounded-md overflow-hidden position-relative">
         <div className="attachment-img w-100 border-bottom">
           {isImage ? (
             <img
@@ -149,96 +143,101 @@ const NotesComponent = ({noteText, setNoteText, files, setFiles, images, setImag
   };
   return (
     <Fragment>
-      <div className="textarea-container">
-        <h3 className="title">Add a Notes</h3>
-        <textarea
-          className="textarea"
-          id="message"
-          name="message_notes"
-          rows="5"
-          placeholder="Add a more detailed description..."
-          value={noteText}
-          onChange={handleTextChange}
-        ></textarea>
-        <div className="attachment-icons">
-          {/* Image Upload */}
-          <label htmlFor="image_upload">
-            <FaRegImage />
-          </label>
-          <input
-            type="file"
-            id="image_upload"
-            name="image_upload_notes"
-            accept="image/*"
-            style={{ display: "none" }}
-            multiple
-            onChange={handleImageUpload}
-          />
+      <div className="notes-card">
+        <h4 className="notes-title">Notes</h4>
+        <div className="textarea-container">
+          <textarea
+            className="textarea"
+            id="message"
+            name="message_notes"
+            rows="5"
+            placeholder="Write task notes..."
+            value={noteText}
+            onChange={handleTextChange}
+          ></textarea>
 
-          {/* File Upload */}
-          <label htmlFor="attachment">
-            <GrAttachment />
-          </label>
-          <input
-            type="file"
-            id="attachment"
-            name="attachment_notes"
-            style={{ display: "none" }}
-            multiple
-            onChange={handleFileUpload}
-          />
-            <div className="image-preview-container">
-              {images.map((image, index) => (
-                <p className="file-preview" key={index}>
-                  {image.name}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="remove-icon"
-                    onClick={() => removeImage(image.name)}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </p>
-              ))}
-              {files.map((file, index) => (
-                <p className="file-preview" key={index}>
-                  {file.name}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="remove-icon"
-                    onClick={() => removeFile(file.name)}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </p>
-              ))}
+          <div className="attachment-icons">
+            <div className="attachment-left-actions">
+              <label htmlFor="image_upload">
+                <FaRegImage />
+              </label>
+              <input
+                type="file"
+                id="image_upload"
+                name="image_upload_notes"
+                accept="image/*"
+                style={{ display: "none" }}
+                multiple
+                onChange={handleImageUpload}
+              />
+
+              <label htmlFor="attachment">
+                <GrAttachment />
+              </label>
+              <input
+                type="file"
+                id="attachment"
+                name="attachment_notes"
+                style={{ display: "none" }}
+                multiple
+                onChange={handleFileUpload}
+              />
             </div>
-        </div>
+            <span className="edit-indicator" aria-hidden="true">
+              <FiEdit2 />
+            </span>
+          </div>
 
-       
+          <div className="image-preview-container">
+            {images.map((image, index) => (
+              <p className="file-preview" key={index}>
+                {image.name}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="remove-icon"
+                  onClick={() => removeImage(image.name)}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </p>
+            ))}
+            {files.map((file, index) => (
+              <p className="file-preview" key={index}>
+                {file.name}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="remove-icon"
+                  onClick={() => removeFile(file.name)}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
       {(notesData && notesData.length > 0) && (
         <div className="main-notes">
-          {notesData.map((note) => (
-            <div key={note.id} className="notes-data">
+          {notesData.map((note) => ( 
+            <div key={note.id} className="notes-data mb-2">
               <div className="notes-header">
-                <p className="description">{note.description || ''}</p>
+                <p className="description" dangerouslySetInnerHTML={{ __html: note.description || '' }}></p>
                 <div className="d-flex justify-content-space-between">
                   <div className="user-info">
                     {(note.user && note.user.profile_image) ? (
@@ -260,7 +259,7 @@ const NotesComponent = ({noteText, setNoteText, files, setFiles, images, setImag
                   </div>
                   {/* Format the created time to a human-readable date */}
                   <p className="created-time">
-                    Created Time: {getTimeAgo(note.created_at)}
+                    <b>Created Time:</b> {getTimeAgo(note.created_at)}
                   </p>
                 </div>
               </div>

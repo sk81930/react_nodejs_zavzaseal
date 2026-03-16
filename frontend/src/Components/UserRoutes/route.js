@@ -6,8 +6,18 @@ import UserCreateEdit from "../Views/Users/createEdit";
 import Settings from "../Views/Settings";
 import RingCentral from "../Views/RingCentral";
 import Calendar from "../Views/Calendar";
+import Crew from "../Views/Crew";
 import TimeLogs from "../Views/TimeLogs";
 import MyProfile from "../Views/MyProfile";
+import WebsiteData from "../Views/WebsiteData";
+import Trace from "../Views/Trace";
+import Crm from "../Views/crm";
+import LeadCost from "../Views/website/LeadCost";
+import DummyReport from "../Views/DummyReport";
+import Estimates from "../Views/Estimates";
+import EstimatesTemplatesPage from "../Views/Estimates/EstimatesTemplatesPage";
+import CreateTemplatePage from "../Views/Estimates/CreateTemplatePage";
+
 export const baseRoutes = [
 	{
 		name: 'Home',
@@ -17,6 +27,31 @@ export const baseRoutes = [
 ];
 
 export const authSuperAdminRoutes = [
+	{
+		name: 'CRM',
+		path: '/crm',
+		component: <Crm />
+	},
+	{
+		name: 'Estimates',
+		path: '/estimates',
+		component: <Estimates />
+	},
+	{
+		name: 'Estimates Templates',
+		path: '/estimates/templates',
+		component: <EstimatesTemplatesPage />
+	},
+	{
+		name: 'Create Template',
+		path: '/estimates/templates/create',
+		component: <CreateTemplatePage />
+	},
+	{
+		name: 'Edit Template',
+		path: '/estimates/templates/edit/:id',
+		component: <CreateTemplatePage />
+	},
 	{
 		name: 'Super Admin Dashboard',
 		path: '/dashboard',
@@ -44,7 +79,7 @@ export const authSuperAdminRoutes = [
 	},
 	{
 		name: 'Settings',
-		path: '/ring-central-settings',
+		path: '/settings',
 		component: <Settings />
 	},
 	{
@@ -58,6 +93,16 @@ export const authSuperAdminRoutes = [
 		component: <Calendar />
 	},
 	{
+		name: 'Trace',
+		path: '/trace',
+		component: <Trace />
+	},
+	{
+		name: 'Crew',
+		path: '/crew',
+		component: <Crew />
+	},
+	{
 		name: 'TimeLogs',
 		path: '/time-logs',
 		component: <TimeLogs />
@@ -66,9 +111,50 @@ export const authSuperAdminRoutes = [
 		name: 'MyProfile',
 		path: '/profile',
 		component: <MyProfile />
-	}
+	},
+	{
+		name: 'Marketing Report',
+		path: '/marketing-report',
+		component: <WebsiteData />
+	},
+	{
+		name: 'Lead Cost',
+		path: '/lead-cost',
+		component: <LeadCost />
+	},
+	{
+		name: 'Dummy Report',
+		path: '/dummy-report',
+		component: <DummyReport />
+	},
 ];
+
 export const authAdminRoutes = [
+	{
+		name: 'CRM',
+		path: '/crm',
+		component: <Crm />
+	},
+	{
+		name: 'Estimates',
+		path: '/estimates',
+		component: <Estimates />
+	},
+	{
+		name: 'Estimates Templates',
+		path: '/estimates/templates',
+		component: <EstimatesTemplatesPage />
+	},
+	{
+		name: 'Create Template',
+		path: '/estimates/templates/create',
+		component: <CreateTemplatePage />
+	},
+	{
+		name: 'Edit Template',
+		path: '/estimates/templates/edit/:id',
+		component: <CreateTemplatePage />
+	},
 	{
 		name: 'Admin Dashboard',
 		path: '/dashboard',
@@ -96,7 +182,7 @@ export const authAdminRoutes = [
 	},
 	{
 		name: 'Settings',
-		path: '/ring-central-settings',
+		path: '/settings',
 		component: <Settings />
 	},
 	{
@@ -118,7 +204,22 @@ export const authAdminRoutes = [
 		name: 'MyProfile',
 		path: '/profile',
 		component: <MyProfile />
-	}
+	},
+	{
+		name: 'Marketing Report',
+		path: '/marketing-report',
+		component: <WebsiteData />
+	},
+	{
+		name: 'Lead Cost',
+		path: '/lead-cost',
+		component: <LeadCost />
+	},
+	{
+		name: 'Dummy Report',
+		path: '/dummy-report',
+		component: <DummyReport />
+	},
 ];
 
 export const authCrewRoutes = [
@@ -158,6 +259,26 @@ export const authOperationsRoutes = [
 ];
 
 export const authEstimatorRoutes = [
+	{
+		name: 'Estimates',
+		path: '/estimates',
+		component: <Estimates />
+	},
+	{
+		name: 'Estimates Templates',
+		path: '/estimates/templates',
+		component: <EstimatesTemplatesPage />
+	},
+	{
+		name: 'Create Template',
+		path: '/estimates/templates/create',
+		component: <CreateTemplatePage />
+	},
+	{
+		name: 'Edit Template',
+		path: '/estimates/templates/edit/:id',
+		component: <CreateTemplatePage />
+	},
 	{
 		name: 'Admin Dashboard',
 		path: '/dashboard',

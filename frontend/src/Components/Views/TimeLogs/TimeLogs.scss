@@ -1,0 +1,22 @@
+.time_logwrap {
+	.rdt_Table{
+		.rdt_TableHead{
+		.rdt_TableHeadRow{
+				.rdt_TableCol{
+					    padding:8px 10px !important;
+				}
+			}
+		}
+		.rdt_TableBody{
+		.rdt_TableRow{
+			.rdt_TableCell{
+				padding:8px 10px !important;
+				.action_btn {
+					width:30px;
+					height:27px;
+				}
+			}
+		}
+		}
+	}
+}

@@ -1,18 +1,20 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBBtn } from 'mdb-react-ui-kit';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import DateRangePicker from 'react-bootstrap-daterangepicker'; 
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import { LuChartNoAxesCombined } from "react-icons/lu";
-import { CALL_LOGS, CALL_LOGS_TOKEN, CALL_LOGS_CHART_DATA_FIRST, CALL_LOGS_CHART_DATA_SECOND } from '../../../constants/actionTypes';
+import { CALL_LOGS, CALL_LOGS_TOKEN, CALL_LOGS_CHART_DATA_FIRST, CALL_LOGS_CHART_DATA_SECOND, LOADER_SHOW } from '../../../constants/actionTypes';
 import agent from '../../../agent';
 import missedCallIcon from "../../../assets/images/miss_call.svg";
 import receiveCallIcon from "../../../assets/images/recieve_call.svg";
 import pickCallIcon from "../../../assets/images/call_pick.svg";
 import playBtn from "../../../assets/images/play_btn_1.png";
 import AudioPopup from './AudioPopup';
+
+import './CallLogsPage.scss';
 
 import {
   Chart as ChartJS,
@@ -22,7 +24,7 @@ import {
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import moment from 'moment';
-import './CallLogsPage.scss';
+
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -79,8 +81,17 @@ const chartColors = [
   'rgb(243 230 277)',
 ];
 
+export const callLoaderShow = (type) => ({
+  type: LOADER_SHOW,
+  payload: {
+    type
+  }
+});
+
 const CallLogsPage = (props) => {
   const { getCallLogs, callLogsData, callLogsChartData1, callLogsChartData2, getCallLogsChartData1, getCallLogsChartData2, getCallLogsToken, callLogsToken } = props;
+
+  const dispatch = useDispatch();
 
   const buildQueryString = () => {
     // Initialize an array to hold the query string components
@@ -259,6 +270,7 @@ const CallLogsPage = (props) => {
     if(data.contentUri){
       var uri = data.contentUri;
       if (uri && token) {
+        dispatch(callLoaderShow(true))
         fetch(uri, {
           method: 'GET',
           headers: {
@@ -266,6 +278,7 @@ const CallLogsPage = (props) => {
           },
         })
         .then(response => {
+          dispatch(callLoaderShow(false))
           if (response.ok) {
             return response.blob(); // Get the audio content as a blob
           }
@@ -273,11 +286,13 @@ const CallLogsPage = (props) => {
           throw new Error('Failed to fetch audio');
         })
         .then(blob => {
+          dispatch(callLoaderShow(false))
           const audioUrl = URL.createObjectURL(blob); // Create a URL for the audio blob
           setAudioSrc(audioUrl); // Set the audio source
           setShowPopup(true);
         })
         .catch(error => {
+          dispatch(callLoaderShow(false))
           getCallLogsToken();
           console.error('Error fetching audio:', error);
         });
@@ -422,12 +437,12 @@ const CallLogsPage = (props) => {
  
 
   return (
-    <MDBContainer className="py-4">
+    <MDBContainer className="py-4  calllog_main_div roles_maincard">
       {showPopup && <AudioPopup audioSrc={audioSrc} closePopup={closePopup} />}
       {/* Filters Card */}
       <MDBCard className="mb-4">
         <MDBCardBody>
-          <div className="call-filters-main">
+          <div className="call-filters-main p-0">
             <div className="call-filters">
               <Select
                 options={callTypeOptions}
@@ -469,6 +484,7 @@ const CallLogsPage = (props) => {
                     className="filter-input"
                     readOnly
                     value={dateRange1.startDate && dateRange1.endDate ? `${moment(dateRange1.startDate).format('MM/DD/YYYY HH:mm')} - ${moment(dateRange1.endDate).format('MM/DD/YYYY HH:mm')}` : ''}
+					placeholder="Select Date"
                   />
                 </DateRangePicker> 
               </div>
@@ -498,16 +514,19 @@ const CallLogsPage = (props) => {
                         className="filter-input"
                         readOnly
                         value={dateRange2.startDate && dateRange2.endDate ? `${moment(dateRange2.startDate).format('MM/DD/YYYY HH:mm')} - ${moment(dateRange2.endDate).format('MM/DD/YYYY HH:mm')}` : ''}
+						placeholder="Select Compare Date"
                       />
                     </DateRangePicker>
                   </div>
               )}
-              <div className="compare-icon">
-                 <div className="view_chart cursor-pointer" onClick={() => setShowDatePickerInput2(!showDatePickerInput2)}><img  src={require("../../../assets/images/left-and-right-arrows.png")} alt="compare" draggable="false" /></div>
-              </div>
+              <div className="d-flex filter-campares gap-2">
+                <div className="compare-icon">
+                   <div className="view_chart cursor-pointer" onClick={() => setShowDatePickerInput2(!showDatePickerInput2)}><img  src={require("../../../assets/images/left-and-right-arrows.png")} alt="compare" draggable="false" /><p>Show Compare Range</p></div>
+                </div>
 
-              <div className="chart-icon">
-                <div className="view_chart cursor-pointer" onClick={chartDataHandle}><img  src={require("../../../assets/images/growth.png")} alt="compare" draggable="false" /></div>
+                <div className="chart-icon">
+                  <div className="view_chart cursor-pointer" onClick={chartDataHandle}><img  src={require("../../../assets/images/growth.png")} alt="compare" draggable="false" /><p>Show Chart</p></div>
+                </div>
               </div>
             </div>
             <div className="d-flex gap-3">
@@ -515,7 +534,7 @@ const CallLogsPage = (props) => {
                 APPLY
               </MDBBtn>
               {showClearFilter && (
-                <button className="mt-3 btn btn-secondary" onClick={cancelFilters}>
+                <button className="mt-3 btn btn-secondary filter_btn_wrap" onClick={cancelFilters}>
                   CLEAR FILTER
                 </button>
               )}
@@ -528,7 +547,7 @@ const CallLogsPage = (props) => {
       {/* Table/Chart Card */}
       <MDBCard>
         <MDBCardHeader>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center show_table_btn">
             <h5 className="mb-0">{showTable ? 'Call Logs Table' : 'Call Distribution Chart'}</h5>
             <MDBBtn size="sm" onClick={() => setShowTable(!showTable)}>
               {showTable ? 'Show Chart' : 'Show Table'}
@@ -547,7 +566,7 @@ const CallLogsPage = (props) => {
               onChangeRowsPerPage={handlePerPageChange}
               progressPending={loading}
               highlightOnHover
-            />
+            /> 
           ) : (
             <div className="d-flex justify-content-center">
               {(chartData && chartData.labels.length > 0) || (chartData2 && chartData2.labels.length > 0) ? (
@@ -564,7 +583,7 @@ const CallLogsPage = (props) => {
                         </h3>
                       )}
                       <div className="w-100 d-flex justify-content-center">
-                        <div style={{width:"100%"}} >
+                        <div className="d-flex justify-content-center" style={{width:"100%"}} >
                             <Doughnut data={chartData} />
                         </div> 
                       </div>
@@ -597,7 +616,7 @@ const CallLogsPage = (props) => {
                         </h3>
                       )}
                       <div className="w-100 d-flex justify-content-center">
-                        <div style={{width:"100%"}} >
+                        <div className="d-flex justify-content-center" style={{width:"100%"}} >
                             <Doughnut data={chartData2} />
                         </div> 
                       </div>

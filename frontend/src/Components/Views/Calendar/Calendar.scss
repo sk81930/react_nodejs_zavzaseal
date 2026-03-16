@@ -1,37 +1,114 @@
-
 .calendar-container{
-  margin-top: 10rem;
-  .fc-button-group  {
-    button{
-      background: transparent !important;
-      border: none !important;
-      color: #332d2d !important;
+  * {
+    font-family: var(--font-family);
+  }
+  .top-calendar-card {
+    border: 2px solid #F8F9FC;
+    background: transparent;
+    box-shadow: none;
+    margin-bottom: 30px !important;
+  }
+  .calendar-card {    
+    border: 1px solid #f8f9fb;
+    border-radius: 8px;
+    background: #f8f9fb;
+    box-shadow: 0px 2px 2.4px 0px #103a4e17;
+  }  
+  .calendar-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+
+  .calendar-toolbar-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .calendar-toolbar-title {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    text-transform: uppercase;
+  }
+
+  .calendar-toolbar-right {
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+
+  .calendar-bttons {
+    border: 1px solid #dddddddd;
+    border-radius: 8px;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .sep {
+      color: #DDDDDDDD;
     }
-    
   }
-  .fc-toolbar-chunk{
-    .fc-button:disabled{
-      background: transparent !important;
-      border: none !important;
-      color: #332d2d !important;
-      text-transform: uppercase;
-    }  
+  .calendar-nav-btn {
+    width: 30px;
+    height:30px;
+    padding: 0;
+    background: transparent !important;
+    border:0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;    
+    &.active path, &:hover path, &:focus path, &:active path {
+      stroke: #2EA7DF;
+    }
   }
-  .fc-addTaskButton-button {
-      background: #3b71ca;
-      border: none;
-      padding: 8px 25px;
-      font-size: 12px;
-      &:hover, &:active, &:focus{
-        background: #3b71ca !important;
-        border: none;
-        padding: 8px 25px;
-        box-shadow: none !important;
-      }
+
+  .calendar-today-btn {
+    padding: 4px 12px;
+    font-weight: 400;
+    font-size: 12px;
+    color: #2EA7DF;
+    border: 1px solid #ECF5FA;
+    background: transparent !important;
   }
+
+  .calendar-week-btn {
+    padding: 4px 12px;
+    font-weight: 400;
+    font-size: 12px;
+    color: #999;
+    border: 1px solid #999;
+    background: transparent !important;
+
+    &.active {
+      background: #2ca8e2 !important;
+      color: #fff !important;
+      border-color: #2ca8e2 !important;
+    }
+  }
+
+  .calendar-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 6px 12px;
+    box-shadow: none;
+    border-radius: 8px;
+    background: #2EA7DF !important;
+    box-shadow: none !important;
+  }
+
   .main-event-title{
+    overflow:hidden;
+    text-overflow:ellipsis;
     cursor: pointer;
+    padding: 8px !important;
   }
+
   #event-tooltip{
     background: #6d6d6d;
     padding: 9px 23px;
@@ -42,17 +119,173 @@
     font-size: 12px;
     text-align: center;
   }
-}
-.fc-addTaskButton-button {
-  background-color: #ccc;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-}
 
-/*.fc-addTaskButton-button:hover {
-  background-color: #0056b3;
-}*/
+  .fc-col-header th a {
+    padding: 15px 10px !important;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    text-align: center;
+    color: #000
+  } 
+  .fc-theme-standard .fc-scrollgrid{
+    border:1px solid #ddd;
+  }
+  .fc-theme-standard td, .fc-theme-standard th {
+    border-color: #ddd;
+  }
+  .fc-theme-standard td {
+    border-bottom:none !important;
+    .fc-daygrid-day-frame{
+      transition:all .5s ease-in-out;
+      cursor: pointer;
+      &:hover{
+        background:#eeeeee;
+      }
+    }
+    .fc-day .fc-daygrid-day-top a {
+      color: #000;
+      pointer-events: none;
+    }
+  }
+  .fc-daygrid-event {
+    border-radius: 10px !important;
+  }
+  .fc-daygrid-event {   
+    font-size: 12px;
+    margin: 15px 8px !important;
+    line-height: 16px;
+  }
+  .fc-day-number-custom {
+    display: flex;    
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    color: #70757d;
+
+    .fc-day-month {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .fc-day-number {
+      font-size: 11px;
+      color: #2b313a;
+    }
+  }
+  .fc-daygrid-day-top{
+    justify-content:center;   
+    position: absolute;
+    bottom: 2px;
+    left: 4px;
+     *{
+      font-weight: 400;
+      font-size: 13px !important;
+      color:#000;
+    }
+  }
+  .fc-theme-standard .fc-scrollgrid {
+    border-radius:8px;
+    border-right:none;
+  }
+  .fc-event-main span {
+    font-size:.7rem;
+    font-weight:700;
+  }
+}
+/**ng**/
+.calendar-container {
+	p.text-body {
+      font-size: 1rem;
+    }
+}
+.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #ccc !important;
+}
+.headerInnerBottom {
+	p, span {
+	    color: #646464;
+	    font-size: 12px !important;
+   }
+}
+.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root {
+    font-size: .6rem !important;
+}
+@media(min-width:1400px){
+	.calendar-container {
+       padding-top: 44px;	  
+    }
+}
+@media (min-width: 1200px) {
+    .calendar-container h2 {
+        font-size: 2rem;
+    }
+}
+@media screen and (max-width: 1199px) {
+    .calendar-container {
+        h2 {
+            font-size: 30px;
+            margin-bottom: 10px !important;
+        }
+        p.text-body {
+            font-size: 17px;
+        }
+        .fc-toolbar-title {
+            font-size: 24px !important;
+        }        
+    }
+}
+/**ng**/
+@media  (max-width:767px) {
+	.calendar-container{
+		 .fc-toolbar-title {
+			font-size:20px !important;
+		}
+        h2 {
+            font-size: 26px;
+        }
+	}
+}
+@media  (max-width:991px) {
+	.calendar-container{
+		 h2 {
+			margin-bottom:10px !important;
+		}
+		.fc-toolbar-title {
+			margin-bottom:0px !important;
+			margin-top:10px;
+		}
+	}
+}
+@media  (max-width:575px) {
+	.calendar-container {
+		section>div {
+			padding:10px 10px !important;
+		}
+		.fc-toolbar{
+			flex-direction:column;
+			.fc-addTaskButton-button {
+				padding:9px 10px;
+				font-size:11px;
+			}
+		}
+		.fc-header-toolbar {
+		  .fc-toolbar-chunk {
+			&:first-child {
+			  margin-left:-127px;
+			}
+		  }
+		}
+		.fc-theme-standard{ 
+			table {
+				tr{
+					width:39px;
+				}
+				th{
+					width:39px;
+				}
+			}
+		}
+	}
+}

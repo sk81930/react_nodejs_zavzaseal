@@ -1,9 +1,150 @@
 .create_user{
+	h4{
+		font-weight:600;
+	}
+	.card-body{
+		form{
+			label{
+				font-weight:500;
+				color:#0c3244;
+				font-size:.875rem !important;
+				margin-bottom:.7rem;
+			}
+			.form-outline{
+					padding:10.5px 15px;
+					border:1px solid #e0e0e0 !important;
+					border-radius:8px;
+					box-shadow:0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+				input{
+					padding:0px;
+					border:none !important;
+					color:#0c3244;
+					font-size:.875rem !important;
+					&::placeholder{
+						color:#0c3244;
+						font-size:.875rem !important;
+					}
+					&:focus-visible{
+						outline:none;
+					}
+					&:focus{
+							outline:none;
+					}
+				}
+				div{
+					border:none !important;
+					&:focus-visible{
+						outline:none;
+					}
+					&:focus{
+							outline:none;
+					}
+				}
+				&:focus-visible{
+						outline:none;
+				}
+			}
+			.css-1p3m7a8-multiValue{
+			    background:#f4fbfe;
+				border:1px solid #28a8e24a;
+				.css-9jq23d{
+					color:#2497cb;
+				}
+				.css-tj5bde-Svg{
+					fill:#757575;
+				}
+			}
+			.btn{
+				font-size:14px;
+				text-transform:capitalize;
+				font-weight:600;
+				padding:10px 20px;
+			}
+			.cancel_btn_wrap{
+				background:#e0e0e0 !important;
+				border:none;
+				color:#000;
+			}
+			.removePr {
+				background:#ff0000f5 !important;
+				padding:7px 4px !important;
+				&:hover{
+					opacity:.8;
+				}
+			}
+			.css-13cymwt-control{
+				min-height:44px;
+			}
+		}
+	}
 	.image-container {
 	   &:hover {
 	      .removePr {
-	        display: block !important;
+	        display:block !important;
 	      }
 	   }
 	}
 }
+.swal2-icon-warning{
+	.swal2-warning {
+		border-color:#dd3333;
+		color:#dd3333;
+	}
+	.swal2-title{
+		color:#4f4f4f !important;
+	}
+}
+.users_maincard{
+	.card-header {
+		.ripple{
+			padding:17px 20px !important;
+			display:flex;
+			justify-content:center;
+			align-items:center;
+			border:none;
+		}
+	}
+	.rdt_Table{
+		.rdt_TableCell{
+			.btn {
+				padding:8px 10px !important;
+				font-size:12px;
+				height:35px;
+			}
+		}
+	}
+
+}
+
+@media (max-width:991px) {
+	.users_maincard{
+		.rdt_Table{
+		.rdt_TableHead{
+		.rdt_TableHeadRow{
+				.rdt_TableCol{
+					width:177px;
+				}
+			}
+		}
+		.rdt_TableBody{
+			.rdt_TableRow{
+				.rdt_TableCell{
+					width:177px;
+				}
+			}
+		}
+	}
+
+	}
+}
+
+@media (max-width:767px) {
+	.users_maincard{
+		.card-header {
+			.ripple{
+				padding:15px 18px !important;
+			}
+		}
+	}
+}
+

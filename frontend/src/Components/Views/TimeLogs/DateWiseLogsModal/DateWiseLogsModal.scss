@@ -6,6 +6,12 @@
 	left: 25%;
    .modal-content{
         background-color: #f2f5f8;
+		.user_img{
+			.profile-image-span{
+			    width:35px;
+				height:35px;
+			}
+		}
           .timelog_tab {
 	          ul {
 			    justify-content: flex-end;
@@ -52,4 +58,34 @@
     border-style: solid;
     border-width: 0;
     box-sizing: border-box;
+}
+@media (min-width:576px) and (max-width:767px){
+	.DateWiseLogsModal{
+		width:85%;
+		left:15%;
+	}
+}
+@media (max-width:767px){
+	.DateWiseLogsModal{
+		width: 75%;
+		left: 25%;
+	   .modal-content{
+			.user_img{
+				.profile-image-span{
+					width:28px;
+					height:28px;
+						span{
+							font-size:16px;
+						}
+				}
+			}
+		}
+	   
+	}
+}
+@media (max-width:576px){
+	.DateWiseLogsModal{
+		width:85%;
+		left:15%;
+	}
 }

@@ -63,7 +63,7 @@ const ProfileModal = ({handleSubmit = null,children}) => {
       <SideModal isOpen={isOpen} setIsOpen={setIsOpen} onHide={onHide} setOnHide={setOnHide} showButton={false}  handleCloseDispatch={handleCloseDispatch} classDef="profileContainer" >
          {(userData) && (
            <Fragment>
-            <div className="d-flex align-items-start mb-3" style={{ height: "100px", padding: "20px", paddingRight: "60px" }}>
+            <div className="d-flex align-items-start mb-3" style={{ height: "100px",paddingTop: "15px", padding: "5px", paddingRight: "30px" }}>
               <MDBCol size='5' className="left_inner_wrap bg-white rounded-3 shadow-md px-0 py-3">
                   <h3 className="text-lg font-medium text-xs text-uppercase text-light admin_name p-1 pe-3  mb-2 position-relative">{userData.role}</h3>
                   <div className="img-div">

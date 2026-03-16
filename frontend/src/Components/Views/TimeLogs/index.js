@@ -9,7 +9,7 @@ import DataTable from 'react-data-table-component';
 import WorkingLogsModal from './WorkingLogsModal';
 
 import { FaEye } from "react-icons/fa";
-
+import "./TimeLogs.scss";
 
 const mapStateToProps = (state) => ({
   ...state,
@@ -111,7 +111,7 @@ const TimeLogs = (props) => {
         <Fragment>
             <Fragment>
               <button
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary btn-sm action_btn d-flex align-items-center"
                 style={{ marginRight: '10px', background: '#2497cb' }}
                 onClick={() => handleShowLog(row)}
               >
@@ -127,12 +127,11 @@ const TimeLogs = (props) => {
     <Fragment>
       <WorkingLogsModal isOpen={isOpen} setIsOpen={setIsOpen} onHide={onHide} setOnHide={setOnHide} logsUserId={logsUserId} />
       <MDBContainer>
-        <MDBCard className="mt-4">
+        <MDBCard className="mt-4 roles_maincard time_logwrap">
           <MDBCardHeader>
             <h3>Time Logs</h3>
           </MDBCardHeader>
           <MDBCardBody>
-            {(data && data.length > 0) ? (
               <DataTable
                 columns={columns}
                 data={data}
@@ -159,9 +158,6 @@ const TimeLogs = (props) => {
                   />
                 }
               />
-            ) : (
-              <div>No Time logs found</div>
-            )}
           </MDBCardBody>
         </MDBCard>
       </MDBContainer>

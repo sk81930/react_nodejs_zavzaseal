@@ -72,6 +72,8 @@ const MainView = (props) => {
 
 
   	useEffect(() => {
+
+		console.log(currentUser);
 	    if (currentUser && currentUser.id) {
 	    	loadAppLoad(false);
 	    	setTimeout(function(){
@@ -92,7 +94,7 @@ const MainView = (props) => {
 
 	return (
 		<Fragment>
-			<section className="bg-light py-3 py-md-5">
+			<section className="bg-light py-3 py-md-5 login-page">
 			  <div className="container">
 			    <div className="row justify-content-center">
 			      <div className="col-12 col-sm-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">

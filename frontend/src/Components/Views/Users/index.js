@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn } from '../../../mdb';
+import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn } from 'mdb-react-ui-kit';
 import agent from '../../../agent';
 import { USERS, DELETE_USER, CLEAR_FLASH_MESSAGE } from '../../../constants/actionTypes';
 import DataTable from 'react-data-table-component';
@@ -175,7 +175,7 @@ const Users = (props) => {
 
   return (
     <MDBContainer>
-      <MDBCard className="mt-4">
+      <MDBCard className="roles_maincard users_maincard mt-4">
         <MDBCardHeader>
           <h3>Users</h3>
           <MDBBtn

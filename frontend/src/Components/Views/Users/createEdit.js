@@ -1,8 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 
-import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn, MDBRow, MDBCol } from  '../../../mdb';
-import { MDBSelect, MDBSelectInput, MDBSelectOption, MDBTextArea } from 'mdb-react-ui-kit';
+import { MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBInput, MDBBtn, MDBRow, MDBCol, MDBSelect, MDBSelectInput, MDBSelectOption, MDBTextArea } from 'mdb-react-ui-kit';
 import { useNavigate, useParams, Link} from 'react-router-dom';
 import agent from '../../../agent';
 import { useDropzone } from 'react-dropzone';
@@ -10,7 +9,7 @@ import Select from 'react-select'; // For react-select multi-select
 
 import "./users.scss";
 
-import { USERS, GET_USER_BY_ID, CREATE_USER, ROLES, CLEAR_FLASH_MESSAGE } from '../../../constants/actionTypes';
+import { USERS, GET_USER_BY_ID, CREATE_USER, ROLES, CLEAR_FLASH_MESSAGE, LOADER_SHOW } from '../../../constants/actionTypes';
 
 const mapStateToProps = (state) => ({
   ...state,
@@ -39,6 +38,13 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
+export const callLoaderShow = (type) => ({
+  type: LOADER_SHOW,
+  payload: {
+    type
+  }
+});
+
 const UserCreateEdit = (props) => {
   const { editUserDataError, getRoles, rolesData, submitForm, flashError, clearFlash, flashSuccess } = props;
   const [selectedFile, setSelectedFile] = useState(null);
@@ -48,15 +54,19 @@ const UserCreateEdit = (props) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
+  const dispatch = useDispatch();
+
   const { id = null } = useParams();
 
   const getUserById = async (user_id) => {
-
+    dispatch(callLoaderShow(true))
 
     try {
 
       // Assuming agent.Auth.editTask handles FormData
       const userDataResponse = await agent.Auth.getUserById(user_id);
+
+      dispatch(callLoaderShow(false))
 
       if(userDataResponse && userDataResponse.data && userDataResponse.data.user){
         setEditUserData(userDataResponse.data.user)
@@ -65,6 +75,7 @@ const UserCreateEdit = (props) => {
       }
 
     } catch (error) {
+      dispatch(callLoaderShow(false))
       navigate("/users")
     }
 
@@ -75,6 +86,8 @@ const UserCreateEdit = (props) => {
     lastName: '',
     email: '',
     address: '',
+    password: '',
+    confirmPassword: '',
     contactNumber: '',
     hourlySalary: '',
     additionalInfo: '',
@@ -161,6 +174,24 @@ const UserCreateEdit = (props) => {
   const handleSubmit = (e) => {
     clearFlash();
     e.preventDefault();
+    
+        // Password Match Validation
+       if (formData.password !== formData.confirmPassword) {
+          setErrorMsg("Passwords do not match");
+          return;
+        }
+    
+        // Password Strength Validation
+        const passwordRegex =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    
+        if (!passwordRegex.test(formData.password)) {
+          setErrorMsg(
+            "Password must be at least 8 characters and include uppercase, lowercase, number and special character."
+          );
+          return;
+        }
+    
     var roles = [];
     formData.selectedRoles.forEach(function(roleOpt){
         roles.push(roleOpt.value);
@@ -173,6 +204,7 @@ const UserCreateEdit = (props) => {
     formDataNew.append("removeImage", formData.removeImage);
     formDataNew.append("last_name", formData.lastName);
     formDataNew.append("email", formData.email);
+    formDataNew.append("password", formData.password);
     formDataNew.append("contact_number", formData.contactNumber);
     formDataNew.append("hourly_salary", formData.hourlySalary);
     formDataNew.append("address", formData.address);
@@ -229,7 +261,7 @@ const UserCreateEdit = (props) => {
 
 
   return (
-    <MDBContainer className="mt-5 create_user">
+    <MDBContainer className="mt-5 create_user roles_maincard user_wrap">
       <MDBCard>
         <MDBCardHeader>
           <h4>{(id)?'Edit User':'Create User'}</h4>
@@ -296,6 +328,36 @@ const UserCreateEdit = (props) => {
                     value={formData.address}
                     onChange={handleChange}
                     required
+                    className="form-control"
+                  />
+                </div>
+              </MDBCol>
+            </MDBRow>
+            
+            <MDBRow className="g-4 mb-4">
+              <MDBCol md="6">
+                <div className="form-group">
+                  <label>Password</label>
+                  <MDBInput
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required={!id}
+                    className="form-control"
+                  />
+                </div>
+              </MDBCol>
+            
+              <MDBCol md="6">
+                <div className="form-group">
+                  <label>Confirm Password</label>
+                  <MDBInput
+                    name="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required={!id}
                     className="form-control"
                   />
                 </div>
@@ -390,10 +452,12 @@ const UserCreateEdit = (props) => {
                 )}
               </MDBCol>
             </MDBRow>
+            
+            
 
             <MDBCol md="12" className="d-flex gap-4">
               <MDBBtn type="submit" color="primary" className="w-20">Submit</MDBBtn>
-              <MDBBtn type="button" color="secondary" className="w-20"onClick={handleCancel}>Cancel</MDBBtn>
+              <MDBBtn type="button" color="secondary" className="cancel_btn_wrap w-20"onClick={handleCancel}>Cancel</MDBBtn>
             </MDBCol>
           </form>
         </MDBCardBody>
