@@ -47,7 +47,7 @@ class SettingsController {
 
 				let datareturn = await SettingModal.getSettings().then(async data => {
 					                                if(data && data.length > 0){
-					                                	console.log(data)
+					                                	//console.log(data)
 					                                }
 												    return data;
 												}).catch((error) => {

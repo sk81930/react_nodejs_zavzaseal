@@ -1,6 +1,6 @@
 const baseResponse = require("../Util/baseResponse.js");
 const axios = require('axios');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const fs = require('fs');
 const path = require('path');
 const db = require('../config/connection.js');
@@ -9,6 +9,14 @@ const UserModal = require('../models/User');
 
 class TimeLogsController {
     // Main method to execute the fetching process
+
+    constructor() {
+        // Set the default timezone to 'America/New_York' or any other desired timezone
+        // this.defaultTimezone = 'America/New_York';
+        // moment.tz.setDefault(this.defaultTimezone);
+        // console.log(`Default timezone set to: ${this.defaultTimezone}`);
+    }
+
 
     addTimeLog = async (session, req, res) => {
         const response = new baseResponse(res);
@@ -20,12 +28,21 @@ class TimeLogsController {
 
             const logs = await TimeLogsModel.getTimeLogByTaskId(req.body.task_id);
 
+            let check_out = null;
+
+            if(req.body.check_out){
+               check_out = req.body.check_out.trim();
+            }
+
+            
+
 
 
             if(req.body.log_type && req.body.log_type == "checkout" && logs && logs.length > 0){
 
+
                 await TimeLogsModel.updateTimeLog({
-                    check_out: req.body.check_out,
+                    check_out: check_out,
                     logs
                 });
 
@@ -33,10 +50,13 @@ class TimeLogsController {
 
             }else{
 
+                let check_in = req.body.check_in.trim();
+
                 await TimeLogsModel.addTimeLog({
                     user_id : session.id,
                     task_id: req.body.task_id,
-                    check_in: req.body.check_in
+                    check_in: check_in,
+                    check_out: check_out,
                 });
 
                 return response.sendResponse({}, true, "Time Log Added successfully", 201);
@@ -94,27 +114,33 @@ class TimeLogsController {
 
             if(userLogsData && userLogsData.length > 0){
 
+
                 const transformedData2 = userLogsData.reduce((acc, log) => {
-                    const checkInDate = moment.utc(log.check_in).local().format('YYYY-MM-DD');
-                    const check_in = moment.utc(log.check_in).local().format('YYYY-MM-DD HH:mm:ss');
+                    const checkInDate = moment(log.check_in).format('YYYY-MM-DD');
+                    const check_in = moment(log.check_in).format('YYYY-MM-DD HH:mm:ss');
                     let check_out;
 
                     let hasNull = false;
 
+                    console.log(moment());
+
                     // Check if check_out exists
                     if (log.check_out) {
                         // If check_out exists, use it
-                        check_out = moment.utc(log.check_out).local().format('YYYY-MM-DD HH:mm:ss');
+                        check_out = moment(log.check_out).format('YYYY-MM-DD HH:mm:ss');
                     } else {
                         hasNull = true;
+
                         // If check_out doesn't exist, set to 23:59:59, but only if check_in is not today
                         if (!moment(check_in).isSame(moment(), 'day')) {
-                            check_out = moment.utc(log.check_in).local().set({ hour: 23, minute: 59, second: 59 }).format('YYYY-MM-DD HH:mm:ss');
+                            check_out = moment(log.check_in).set({ hour: 23, minute: 59, second: 59 }).format('YYYY-MM-DD HH:mm:ss');
                         } else {
                             // If today, keep check_out as the same time as check_in or set it to 23:59:59
-                            check_out = moment.utc(log.check_in).local().set({ hour: moment().hour(),minute: moment().minute(), second: moment().second()}).format('YYYY-MM-DD HH:mm:ss');
+                            check_out = moment(log.check_in).set({ hour: moment().hour(),minute: moment().minute(), second: moment().second()}).format('YYYY-MM-DD HH:mm:ss');
                         }
                     }
+
+
 
 
 
@@ -200,6 +226,8 @@ class TimeLogsController {
             const userId = req.params.userId;
 
             const { logDate } = req.query;
+
+            
    
             if (!userId) {
                 return response.sendResponse(null, false, "userId is required", 400);
@@ -226,8 +254,8 @@ class TimeLogsController {
                 }
 
                 logData = userLogsData.reduce((acc, log) => {
-                    const checkInDate = moment.utc(log.check_in).local().format('YYYY-MM-DD');
-                    const check_in = moment.utc(log.check_in).local().format('YYYY-MM-DD HH:mm:ss');
+                    const checkInDate = moment(log.check_in).format('YYYY-MM-DD');
+                    const check_in = moment(log.check_in).format('YYYY-MM-DD HH:mm:ss');
                     let check_out;
 
                     let hasNull = false;
@@ -235,15 +263,15 @@ class TimeLogsController {
                     // Check if check_out exists
                     if (log.check_out) {
                         // If check_out exists, use it
-                        check_out = moment.utc(log.check_out).local().format('YYYY-MM-DD HH:mm:ss');
+                        check_out = moment(log.check_out).format('YYYY-MM-DD HH:mm:ss');
                     } else {
                         hasNull = true;
                         // If check_out doesn't exist, set to 23:59:59, but only if check_in is not today
                         if (!moment(check_in).isSame(moment(), 'day')) {
-                            check_out = moment.utc(log.check_in).local().set({ hour: 23, minute: 59, second: 59 }).format('YYYY-MM-DD HH:mm:ss');
+                            check_out = moment(log.check_in).set({ hour: 23, minute: 59, second: 59 }).format('YYYY-MM-DD HH:mm:ss');
                         } else {
                             // If today, keep check_out as the same time as check_in or set it to 23:59:59
-                            check_out = moment.utc(log.check_in).local().set({ hour: moment().hour(),minute: moment().minute(), second: moment().second()}).format('YYYY-MM-DD HH:mm:ss');
+                            check_out = moment(log.check_in).set({ hour: moment().hour(),minute: moment().minute(), second: moment().second()}).format('YYYY-MM-DD HH:mm:ss');
                         }
                     }
 

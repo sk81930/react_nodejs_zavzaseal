@@ -3,8 +3,8 @@ exports.up = function(knex) {
     table.increments('id').primary();
     table.integer('user_id').notNullable();
     table.integer('task_id').notNullable(); 
-    table.timestamp('check_in', { useTz: false });
-    table.timestamp('check_out', { useTz: false });
+    table.string('check_in');
+    table.string('check_out');
     table.timestamp('deleted_at').nullable();
     table.timestamps(true, true); 
   });

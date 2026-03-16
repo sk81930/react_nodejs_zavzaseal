@@ -1,6 +1,8 @@
 // models/User.js
 const db = require('../config/connection.js'); // Import knex instance
 
+const moment = require('moment');
+
 class TimeLogs {
   // Constructor to set initial values or configuration
   constructor(data = null) {
@@ -11,14 +13,19 @@ class TimeLogs {
     const users = await db('users').whereNull('deleted_at').select('*');
     return users.map(user => new User(user));
   }
-  static async addTimeLog({user_id, task_id, check_in}) {
+  static async addTimeLog({user_id, task_id, check_in, check_out}) {
+    
     try {
-      // Insert the task
-      const [time_logs] = await db('time_logs').insert({
+      var data = {
         user_id,
         task_id,
         check_in
-      }).returning('id');
+      };
+      if(check_out){
+        data.check_out = check_out;
+      }
+      // Insert the task
+      const [time_logs] = await db('time_logs').insert(data).returning('id');
 
       return time_logs;
     } catch (error) {
@@ -57,46 +64,39 @@ class TimeLogs {
   static async getLogsByUserId(user_id, type, start_date = "", end_date = "") {
       let query = db('time_logs').where({ user_id }).select("*").orderBy('check_in', 'desc');
 
-      // Set default time range based on the `type`
       if (type === 'today') {
-        // Get today's date (start and end of the day)
-        const today = new Date();
-        const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
-        const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString();
-        
-        query = query.whereBetween('check_in', [startOfDay, endOfDay]);
+          const today = moment();
+          const startOfDay = today.startOf('day').format('YYYY-MM-DD HH:mm:ss');
+          const endOfDay = today.endOf('day').format('YYYY-MM-DD HH:mm:ss');
+          query = query.whereBetween('check_in', [startOfDay, endOfDay]);
 
       } else if (type === 'yesterday') {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0)).toISOString();
-        const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999)).toISOString();
-        
-        query = query.whereBetween('check_in', [startOfYesterday, endOfYesterday]);
+          const yesterday = moment().subtract(1, 'days');
+          const startOfYesterday = yesterday.startOf('day').format('YYYY-MM-DD HH:mm:ss');
+          const endOfYesterday = yesterday.endOf('day').format('YYYY-MM-DD HH:mm:ss');
+          query = query.whereBetween('check_in', [startOfYesterday, endOfYesterday]);
 
       } else if (type === '7days') {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const startOf7DaysAgo = new Date(sevenDaysAgo.setHours(0, 0, 0, 0)).toISOString();
-        
-        query = query.where('check_in', '>=', startOf7DaysAgo);
+          const sevenDaysAgo = moment().subtract(7, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+          query = query.where('check_in', '>=', sevenDaysAgo);
 
       } else if (type === '30days') {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        const startOf30DaysAgo = new Date(thirtyDaysAgo.setHours(0, 0, 0, 0)).toISOString();
-        
-        query = query.where('check_in', '>=', startOf30DaysAgo);
+          const thirtyDaysAgo = moment().subtract(30, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+          query = query.where('check_in', '>=', thirtyDaysAgo);
 
       } else if (start_date && end_date) {
-        // If start_date and end_date are provided, use them (convert to ISO strings)
-        query = query.whereBetween('check_in', [new Date(start_date).toISOString(), new Date(end_date).toISOString()]);
+          const startOfRange = moment(start_date).format('YYYY-MM-DD HH:mm:ss');
+          const endOfRange = moment(end_date).format('YYYY-MM-DD HH:mm:ss');
+          query = query.whereBetween('check_in', [startOfRange, endOfRange]);
       }
 
       const time_logs = await query;
       return time_logs.length ? time_logs : null;
   }
   static async getDateWiseLogs(user_id, logDate) {
+
+      const startOfDay = logDate+" 00:00:00";
+      const endOfDay = logDate+" 23:59:59";
       let query = db('time_logs')
                       .leftJoin('tasks', 'time_logs.task_id', 'tasks.id')
                       .leftJoin('users', 'time_logs.user_id', 'users.id')
@@ -104,9 +104,8 @@ class TimeLogs {
                       .select("time_logs.*", "users.first_name", "users.last_name", "users.profile_image", "tasks.title")
                       .orderBy('time_logs.check_in', 'desc');
 
-      const log_date = new Date(logDate);
-      const startOfDay = new Date(log_date.setHours(0, 0, 0, 0)).toISOString();
-      const endOfDay = new Date(log_date.setHours(23, 59, 59, 999)).toISOString();
+
+
       
       query = query.whereBetween('time_logs.check_in', [startOfDay, endOfDay]);
 

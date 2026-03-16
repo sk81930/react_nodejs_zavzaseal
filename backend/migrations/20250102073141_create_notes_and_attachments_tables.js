@@ -5,7 +5,8 @@ exports.up = function(knex) {
       table.increments('id').primary();
       table.bigInteger('user_id').notNullable();
       table.bigInteger('task_id').notNullable();
-      table.text('description'); 
+      table.text('description');
+      table.string('type');
       table.timestamp('deleted_at').nullable();
       table.timestamps(true, true); 
     })

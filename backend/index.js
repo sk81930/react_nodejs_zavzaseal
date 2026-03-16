@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const formData = require('express-form-data');
 const bodyParser = require("body-parser")
+const fs = require('fs');
+const path = require('path');
+
 var app = express();
 var http = require('http').createServer(app);
 
@@ -18,12 +21,18 @@ let callsRoute = require('./routes/calls/callsRoute.js');
 
 //let bitrixLeadsRoute = require('./routes/leads/bitrixLeadsRoute.js');
 let dealsRoute = require('./routes/deals/dealsRoute.js');
+let leadsRoute = require('./routes/leads/leadsRoute.js');
 
 let taskRoute = require('./routes/tasks/taskRoute.js');
 
 let timeLogsRoute = require('./routes/timeLogs/timeLogsRoute.js');
 
+let estimateRoute = require('./routes/estimate/estimateRoute.js');
+
 app.use('/backend/public',express.static('public'));
+
+const logFile = path.join(__dirname, 'cron-log.txt');
+
 
 
 app.use(cors());
@@ -33,6 +42,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(formData.parse());
 
 app.use(bodyParser.urlencoded({extended: false}))
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'templates'));
 
 
 app.use(function(req, res, next) {
@@ -57,8 +69,11 @@ app.use("/backend/settings",settingsRoute);
 app.use("/backend/roles",rolesRoute);
 app.use("/backend/calls",callsRoute);
 app.use("/backend/deals",dealsRoute);
+app.use("/backend/leads",leadsRoute);
 app.use("/backend/tasks",taskRoute);
 app.use("/backend/timeLogs",timeLogsRoute);
+app.use("/backend/estimate",estimateRoute);
+
 
 var listener = http.listen(process.env.PORT || 9001, function () {
    let _msgg = `Server listening on port: ${listener.address().port} with config: ${process.env.NODE_ENV}`;
@@ -71,34 +86,49 @@ const bitrixLeadsController = new (require('./controllers/bitrixLeadsController.
 const bitrixDealsController = new (require('./controllers/bitrixDealsController.js'))();
 
 
+function logToFile(message) {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}\n`;
+    fs.appendFile(logFile, logMessage, (err) => {
+        if (err) console.error('Error writing to log file:', err);
+    });
+}
+
+//  const timestamp = new Date().toString();
+
+// console.log(timestamp);
+
 // Schedule the cron job to run every day at 4 PM
 cron.schedule('00 01 * * *', async () => {
-    console.log('Running cron job at 01 AM...');
+    console.log('Running cron job at 01 AM..');
+    logToFile('Running cron job at 01 AM...');
     try {
         // Replace with the actual task you want to run, such as fetching call logs
         await callLogsController.fetch({}, { sendResponse: () => {} });
-        console.log('Call logs Cron job completed successfully');
+        logToFile('Call logs Cron job completed successfully');
     } catch (error) {
-        console.error('Error during cron job:', error.message);
+        logToFile('Error during cron job:', error.message);
     }
 });
-cron.schedule('30 01 * * *', async () => {
-    console.log('Running cron job at 01:30 AM...');
+cron.schedule('30 02 * * *', async () => {
+    console.log('Running cron job at 02:30 AM...');
+    logToFile('Running cron job at 02:30 AM...');
     try {
         // Replace with the actual task you want to run, such as fetching call logs
-        await bitrixLeadsController.getBitrixLeads({}, { sendResponse: () => {} });
-        console.log('getBitrixLeads Cron job completed successfully');
+        await bitrixLeadsController.getBitrixLeadsFromApi({}, { sendResponse: () => {} });
+        logToFile('getBitrixLeads Cron job completed successfully');
     } catch (error) {
-        console.error('Error during cron job:', error.message);
+        logToFile('Error during cron job:', error.message);
     }
 });
-cron.schedule('00 02 * * *', async () => {
-    console.log('Running cron job at 02:00 AM...');
+cron.schedule('00 03 * * *', async () => {
+    console.log('Running cron job at 03:00 AM...');
+    logToFile('Running cron job at 03:00 AM...');
     try {
         // Replace with the actual task you want to run, such as fetching call logs
-        await bitrixDealsController.getBitrixDeals({}, { sendResponse: () => {} });
-        console.log('getBitrixDeals Cron job completed successfully');
+        await bitrixDealsController.getBitrixDealsFromApi({}, { sendResponse: () => {} });
+        logToFile('getBitrixDeals Cron job completed successfully');
     } catch (error) {
-        console.error('Error during cron job:', error.message);
+        logToFile('Error during cron job:', error.message);
     }
 });

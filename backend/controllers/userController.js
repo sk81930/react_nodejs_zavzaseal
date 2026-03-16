@@ -144,7 +144,7 @@ class UserController {
 				const response = new baseResponse(res);
 				try {
 
-					const { id, first_name, last_name, email, address, contact_number, hourly_salary, additional_info, role  } = body;
+					const { id, first_name, last_name, email, address, contact_number, hourly_salary, additional_info, role ,password } = body;
 
 					
 
@@ -187,8 +187,15 @@ class UserController {
 			        if(error.length > 0){
 			         	return response.sendResponse(null, false, error, 403);
 			        }
-
-					var plainPassword = "Working@2024";
+                    
+                    if (!String(password).trim()) {
+                        var plainPassword = "Working@2024";
+                    }else{
+                        var plainPassword = password;
+                        
+                    }
+					
+				
 					const saltRounds = 10;
   
 					// Hash the password with bcrypt
@@ -246,7 +253,7 @@ class UserController {
 				const response = new baseResponse(res);
 				try {
 
-					const { first_name, last_name, email, address, contact_number, hourly_salary, additional_info, role, removeImage } = body;
+					const { first_name, last_name, email, password,address, contact_number, hourly_salary, additional_info, role, removeImage } = body;
 
 					const error = [];
 	
@@ -280,8 +287,9 @@ class UserController {
 			        if(error.length > 0){
 			         	return response.sendResponse(null, false, error, 403);
 			        }
-
-			        let data = {
+			        
+			        
+			       let data = {
 						first_name,
 						last_name,
 						email,
@@ -290,7 +298,12 @@ class UserController {
 						hourly_salary,
 						additional_info,
 						role
-					}
+    				}
+				
+					if (password) {
+                        const saltRounds = 10;
+                        data.password = await bcrypt.hash(password, saltRounds);
+                    }
 
 					if(removeImage && removeImage == "true"){
 						data.profile_image = "";

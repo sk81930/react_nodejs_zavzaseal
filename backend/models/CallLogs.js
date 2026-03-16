@@ -29,6 +29,8 @@ class CallLogs {
       const sortField = body.sortField || 'date_time';
       const sortDirection = body.sortDirection || 'desc';
 
+
+
       // Initialize the base query for logs
       let logQuery = db('ringcentral_call_logs').select('*');
 
@@ -42,8 +44,9 @@ class CallLogs {
           }
 
           if (dateFrom && dateTo) {
-              const startDateFormatted = moment(dateFrom).format('YYYY-MM-DD HH:mm:ss');
-              const endDateFormatted = moment(dateTo).format('YYYY-MM-DD HH:mm:ss');
+              const startDateFormatted = moment.utc(dateFrom);
+              const endDateFormatted = moment.utc(dateTo);
+
               query.whereBetween('date_time', [startDateFormatted, endDateFormatted]);
           }
 

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Estimate - Zavza Seal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            background: white;
+        }
+        
+        /* Image optimization for smaller PDF size */
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0 0.5in;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .header-left {
+            flex: 1;
+        }
+        
+        .header-right {
+            text-align: right;
+            flex: 1;
+        }
+        
+        .company-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        
+        .company-tagline {
+            font-size: 11px;
+            color: #000;
+            margin-top: 5px;
+        }
+        
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-details {
+            border-radius: 5px;
+            margin-bottom: 20px;
+            margin-top: 12px;
+        }
+        
+        .invoice-details h3 {
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        .invoice-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .customer-info, .company-info {
+            border-radius: 5px;
+        }
+        
+        .customer-info h3, .company-info h3 {
+            margin-bottom: 10px;
+            color: #000;
+            font-size: 14px;
+        }
+        
+        .address, .address-right {
+            white-space: pre-line;
+            line-height: 1.5;
+            margin-top: -21px;
+        }
+        .invoice-info {
+            display: grid;
+            gap: 9px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .items-table thead tr {
+            border-bottom: 2px solid;
+        }
+        
+        .items-table th {
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .items-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        /* .items-table tr:nth-child(even) {
+            background: #f8f9fa;
+        } */
+        
+        .description-column {
+            width: 50%;
+        }
+        
+        .qty-column {
+            width: 10%;
+            text-align: center;
+        }
+        
+        .price-column {
+            width: 15%;
+            text-align: right;
+        }
+        
+        .amount-column {
+            width: 15%;
+            text-align: right;
+        }
+        
+        .item-description {
+            margin-bottom: 15px;
+        }
+        
+        .item-description h4 {
+            color: #000;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .analysis-text {
+            margin-bottom: 10px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #000;
+        }
+        
+        .problem-statement {
+            margin-bottom: 10px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .scope-of-work {
+            margin-bottom: 10px;
+        }
+        
+        .scope-of-work h5 {
+            font-size: 11px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .scope-of-work ul {
+            margin-left: 15px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .scope-of-work li {
+            margin-bottom: 3px;
+        }
+
+        /* General list styles */
+        ul, ol {
+            margin: 2px 0;
+            padding-left: 40px;
+        }
+        
+        li {
+            margin: 1px 0;
+            line-height: 1.4;
+            position: relative;
+        }
+        
+
+        /* Ensure list items with data-list attribute display markers correctly */
+        ol[data-list] li,
+        ul[data-list] li {
+            list-style: none;
+        }
+
+        ol[data-list] li::before,
+        ul[data-list] li::before {
+            display: inline-block;
+            text-align: center;
+            width: 1.2em;
+            margin-right: 4px;
+            margin-left: -1.5em;
+        }
+
+        /* Custom ordered list styles */
+        ol[data-list="decimal"] {
+            counter-reset: list-0;
+        }
+        ol[data-list="decimal"] li {
+            counter-increment: list-0;
+        }
+        ol[data-list="decimal"] li::before {
+            content: counter(list-0, decimal) '.';
+        }
+        ol[data-list="decimal"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+        ol[data-list="decimal"] li.ql-indent-1::before { content: counter(list-1, decimal) '.'; }
+        ol[data-list="decimal"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+        ol[data-list="decimal"] li.ql-indent-2::before { content: counter(list-2, decimal) '.'; }
+        ol[data-list="decimal"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+        ol[data-list="decimal"] li.ql-indent-3::before { content: counter(list-3, decimal) '.'; }
+        ol[data-list="decimal"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+        ol[data-list="decimal"] li.ql-indent-4::before { content: counter(list-4, decimal) '.'; }
+
+        ol[data-list="lower-alpha"] {
+            counter-reset: list-0;
+        }
+        ol[data-list="lower-alpha"] li {
+            counter-increment: list-0;
+        }
+        ol[data-list="lower-alpha"] li::before {
+            content: counter(list-0, lower-alpha) '.';
+        }
+        ol[data-list="lower-alpha"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+        ol[data-list="lower-alpha"] li.ql-indent-1::before { content: counter(list-1, lower-alpha) '.'; }
+        ol[data-list="lower-alpha"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+        ol[data-list="lower-alpha"] li.ql-indent-2::before { content: counter(list-2, lower-alpha) '.'; }
+        ol[data-list="lower-alpha"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+        ol[data-list="lower-alpha"] li.ql-indent-3::before { content: counter(list-3, lower-alpha) '.'; }
+        ol[data-list="lower-alpha"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+        ol[data-list="lower-alpha"] li.ql-indent-4::before { content: counter(list-4, lower-alpha) '.'; }
+
+        ol[data-list="upper-alpha"] {
+            counter-reset: list-0;
+        }
+        ol[data-list="upper-alpha"] li {
+            counter-increment: list-0;
+        }
+        ol[data-list="upper-alpha"] li::before {
+            content: counter(list-0, upper-alpha) '.';
+        }
+        ol[data-list="upper-alpha"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+        ol[data-list="upper-alpha"] li.ql-indent-1::before { content: counter(list-1, upper-alpha) '.'; }
+        ol[data-list="upper-alpha"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+        ol[data-list="upper-alpha"] li.ql-indent-2::before { content: counter(list-2, upper-alpha) '.'; }
+        ol[data-list="upper-alpha"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+        ol[data-list="upper-alpha"] li.ql-indent-3::before { content: counter(list-3, upper-alpha) '.'; }
+        ol[data-list="upper-alpha"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+        ol[data-list="upper-alpha"] li.ql-indent-4::before { content: counter(list-4, upper-alpha) '.'; }
+
+        ol[data-list="lower-roman"] {
+            counter-reset: list-0;
+        }
+        ol[data-list="lower-roman"] li {
+            counter-increment: list-0;
+        }
+        ol[data-list="lower-roman"] li::before {
+            content: counter(list-0, lower-roman) '.';
+        }
+        ol[data-list="lower-roman"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+        ol[data-list="lower-roman"] li.ql-indent-1::before { content: counter(list-1, lower-roman) '.'; }
+        ol[data-list="lower-roman"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+        ol[data-list="lower-roman"] li.ql-indent-2::before { content: counter(list-2, lower-roman) '.'; }
+        ol[data-list="lower-roman"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+        ol[data-list="lower-roman"] li.ql-indent-3::before { content: counter(list-3, lower-roman) '.'; }
+        ol[data-list="lower-roman"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+        ol[data-list="lower-roman"] li.ql-indent-4::before { content: counter(list-4, lower-roman) '.'; }
+
+        ol[data-list="upper-roman"] {
+            counter-reset: list-0;
+        }
+        ol[data-list="upper-roman"] li {
+            counter-increment: list-0;
+        }
+        ol[data-list="upper-roman"] li::before {
+            content: counter(list-0, upper-roman) '.';
+        }
+        ol[data-list="upper-roman"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+        ol[data-list="upper-roman"] li.ql-indent-1::before { content: counter(list-1, upper-roman) '.'; }
+        ol[data-list="upper-roman"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+        ol[data-list="upper-roman"] li.ql-indent-2::before { content: counter(list-2, upper-roman) '.'; }
+        ol[data-list="upper-roman"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+        ol[data-list="upper-roman"] li.ql-indent-3::before { content: counter(list-3, upper-roman) '.'; }
+        ol[data-list="upper-roman"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+        ol[data-list="upper-roman"] li.ql-indent-4::before { content: counter(list-4, upper-roman) '.'; }
+
+        /* Custom unordered list styles */
+        ul[data-list="disc"] li::before {
+            content: '•';
+        }
+        ul[data-list="disc"] li.ql-indent-1::before { content: '•'; }
+        ul[data-list="disc"] li.ql-indent-2::before { content: '•'; }
+        ul[data-list="disc"] li.ql-indent-3::before { content: '•'; }
+        ul[data-list="disc"] li.ql-indent-4::before { content: '•'; }
+
+        ul[data-list="circle"] li::before {
+            content: '○';
+        }
+        ul[data-list="circle"] li.ql-indent-1::before { content: '○'; }
+        ul[data-list="circle"] li.ql-indent-2::before { content: '○'; }
+        ul[data-list="circle"] li.ql-indent-3::before { content: '○'; }
+        ul[data-list="circle"] li.ql-indent-4::before { content: '○'; }
+
+        ul[data-list="square"] li::before {
+            content: '■';
+        }
+        ul[data-list="square"] li.ql-indent-1::before { content: '■'; }
+        ul[data-list="square"] li.ql-indent-2::before { content: '■'; }
+        ul[data-list="square"] li.ql-indent-3::before { content: '■'; }
+        ul[data-list="square"] li.ql-indent-4::before { content: '■'; }
+
+        ul[data-list="arrow"] li::before {
+            content: '→';
+        }
+        ul[data-list="arrow"] li.ql-indent-1::before { content: '→'; }
+        ul[data-list="arrow"] li.ql-indent-2::before { content: '→'; }
+        ul[data-list="arrow"] li.ql-indent-3::before { content: '→'; }
+        ul[data-list="arrow"] li.ql-indent-4::before { content: '→'; }
+
+        ul[data-list="tick"] li::before {
+            content: '✓';
+        }
+        ul[data-list="tick"] li.ql-indent-1::before { content: '✓'; }
+        ul[data-list="tick"] li.ql-indent-2::before { content: '✓'; }
+        ul[data-list="tick"] li.ql-indent-3::before { content: '✓'; }
+        ul[data-list="tick"] li.ql-indent-4::before { content: '✓'; }
+        
+        .totals-section {
+            margin-top: 30px;
+            margin-left: auto;
+            width: 300px;
+        }
+        
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .totals-table td {
+            padding: 8px 12px;
+        }
+        
+        .totals-table .label {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .totals-table .amount {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .total-row {
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 2px solid;
+        }
+        
+        .payment-info {
+            margin-top: 30px;
+        }
+        
+        .payment-info h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .payment-details {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .warranty-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f8ff;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+        }
+        
+        .warranty-section h3 {
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        
+        .warranty-text {
+            font-size: 11px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+        }
+        
+        .disclaimer-section h3 {
+            margin-bottom: 15px;
+            color: #856404;
+        }
+        
+        .disclaimer-text {
+            font-size: 10px;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        .currency {
+            font-weight: bold;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        p {
+            margin-bottom: 3px;
+        }
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-left">
+            </div>
+            <div class="header-right">
+                <img src="<%= base64Logo %>" alt="zavzaSeal Logo" class="company-logo" />
+            </div>
+        </div>
+
+        <!-- Invoice Details -->
+        <div class="invoice-details">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <div class="customer-info">
+                        <h3>Estimate</h3>
+                        <div class="address">
+                            <%= customer_name %>
+                            <%= customer_address %>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="invoice-info">
+                            <div>
+                                <b>Estimate Date</b>
+                                <p><%= new Date().toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: '2-digit' 
+                                }) %></p>
+                            </div>
+                            <div>
+                                <b>Estimate Number</b>
+                                <p><%= "#" + estimate.id %></p>
+                            </div>
+                        </div> 
+                        <div>
+                            <div>
+                                <p class="address-right">
+                                    Zavza Seal LLC
+                                    176 Central Ave, Unit 8
+                                    Farmingdale, NY 11735
+                                </p>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Items Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th class="description-column">Description</th>
+                    <!-- <th class="qty-column" style="text-align: right;">Qty</th>
+                    <th class="price-column" style="text-align: right;">Unit Price</th> -->
+                    <th class="amount-column" style="text-align: right;">Amount USD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.forEach(function(item, index) { %>
+                <tr>
+                    <td class="description-column">
+                        <%
+                            const rawDesc = item.description || 'No description provided';
+                            const descriptionParts = rawDesc.split(/----newBox----/i).map(s => s.trim()).filter(s => s.length > 0);
+                            if (descriptionParts.length === 0) descriptionParts.push('No description provided');
+                        %>
+                        <% descriptionParts.forEach((part) => { %>
+                        <div class="item-description">
+                            <!-- <h4>Subject Area: <%= item.item || 'Untitled Item' %></h4> -->
+                            <div class="analysis-text">
+                                <%- part.replace(/font-size\s*:\s*[^;"]+;?/gi, '') %>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </td>
+                    <!-- <td class="qty-column" style="text-align: right;"><%= (item.qty && item.qty !== '' && item.qty !== null && item.qty !== undefined && parseFloat(item.qty) > 1 ? item.qty : '') %></td>
+                    <td class="price-column" style="text-align: right;">
+                        <% if (item.price === null || item.price === undefined || item.price === '') { %>
+                        <% } else if (parseFloat(item.price) < 0) { %>
+                            -$<%= Math.abs(parseFloat(item.price)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>
+                        <% } else { %>
+                            $<%= parseFloat(item.price).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>
+                        <% } %>
+                    </td> -->
+                    <td class="amount-column" style="text-align: right;">
+                        <% if (item.amount === null || item.amount === undefined || item.amount === '') { %>
+                            <!-- No amount to show -->
+                        <% } else if (parseFloat(item.amount) < 0) { %>
+                            -$<%= Math.abs(parseFloat(item.amount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>
+                        <% } else { %>
+                            $<%= parseFloat(item.amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Totals Section -->
+        <div class="totals-section">
+            <table class="totals-table">
+                <tr>
+                    <td class="label">Subtotal:</td>
+                    <td class="amount">$<%= parseFloat(totals.subtotal).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                </tr>
+                <% if (totals.discount && totals.discount !== '' && totals.discount !== null && totals.discount !== undefined && parseFloat(totals.discount) > 0) { %>
+                    <tr>
+                        <td class="label">Discount:</td>
+                        <td class="amount">-$<%= parseFloat(totals.discount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                    </tr>
+                <% } %>
+                <tr class="total-row">
+                    <td class="label">TOTAL USD:</td>
+                    <td class="amount">$<%= (totals.total && totals.total !== '' && totals.total !== null && totals.total !== undefined ? parseFloat(totals.total).toFixed(2) : '0.00').replace(/\B(?=(\d{3})+(?!\d))/g, ",") %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Terms Section -->
+        <% if (terms && terms.trim() !== '') { %>
+            <div class="terms-section">
+                <h3 style="border-bottom: 2px solid #000;">Terms</h3>
+                <div class="terms-text" style="white-space: pre-line;margin-top: -10px;">
+                    <%- terms || 'No terms provided' %>
+                </div>
+            </div>
+        <% } %>
+        <!-- Payment Information -->
+        <!-- <div class="payment-info">
+            
+            <div class="payment-details">
+                <div>
+                    <p>Payment Information</p>
+                    <p>Please make the check payable to: <br>
+                        Zavza Seal LLC <br>
+                    </p>
+                    <p>Registered Office: 176 Central Ave, Unit 8, Farmingdale, NY, 11735, United States.</p>
+                </div>
+                <div>
+                    <p>Mailing Address:</p>
+                    <p>176 Central Avenue, Unit 8</p>
+                    <p>Farmingdale, NY 11735</p>
+                </div>
+            </div>
+        </div> -->
+
+    </div>
+</body>
+</html>

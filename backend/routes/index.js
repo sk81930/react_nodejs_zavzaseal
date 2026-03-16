@@ -32,19 +32,59 @@ router.get("/fetch-call-logs", async (req, res) => {
 		response.sendResponse([], false, err.message, 201);
 	}
 });
-router.get("/getBitrixLeads", async (req, res) => {
+router.get("/getBitrixLeadsFromApi", async (req, res) => {
 	const response = new baseResponse(res);
 	try {
-		let result = await bitrixLeadsController.getBitrixLeads(req.body,res);
+		let result = await bitrixLeadsController.getBitrixLeadsFromApi(req.body,res);
+	} catch(err) {
+		response.sendResponse([], false, err.message, 201);
+	}
+});
+router.get("/saveLeadsInDatabase", async (req, res) => {
+	const response = new baseResponse(res);
+	try {
+		let result = await bitrixLeadsController.saveLeadsInDatabase(req.body,res);
+	} catch(err) {
+		response.sendResponse([], false, err.message, 201);
+	}
+});
+router.get("/getBitrixLeadsStatusFromApi", async (req, res) => {
+	const response = new baseResponse(res);
+	try {
+		let result = await bitrixLeadsController.getBitrixLeadsStatusFromApi(req.body,res);
+	} catch(err) {
+		response.sendResponse([], false, err.message, 201);
+	}
+});
+router.get("/getBitrixLeadsFieldsFromApi", async (req, res) => {
+	const response = new baseResponse(res);
+	try {
+		let result = await bitrixLeadsController.getBitrixLeadsFieldsFromApi(req.body,res);
 	} catch(err) {
 		response.sendResponse([], false, err.message, 201);
 	}
 });
 
-router.get("/getBitrixDeals", async (req, res) => {
+router.get("/getBitrixDealsFromApi", async (req, res) => {
 	const response = new baseResponse(res);
 	try {
-		let result = await bitrixDealsController.getBitrixDeals(req.body,res);
+		let result = await bitrixDealsController.getBitrixDealsFromApi(req.body,res);
+	} catch(err) {
+		response.sendResponse([], false, err.message, 201);
+	}
+});
+router.get("/saveDealsInDatabase", async (req, res) => {
+	const response = new baseResponse(res);
+	try {
+		let result = await bitrixDealsController.saveDealsInDatabase(req.body,res);
+	} catch(err) {
+		response.sendResponse([], false, err.message, 201);
+	}
+});
+router.get("/getBitrixDealsFieldsFromApi", async (req, res) => {
+	const response = new baseResponse(res);
+	try {
+		let result = await bitrixDealsController.getBitrixDealsFieldsFromApi(req.body,res);
 	} catch(err) {
 		response.sendResponse([], false, err.message, 201);
 	}

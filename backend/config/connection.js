@@ -8,7 +8,7 @@ const db = knex(knexConfig);
 async function checkConnection() {
   try {
     
-    // Test the connection with a simple query (e.g., SELECT 1)
+
     let data =  await db.raw("SELECT 1");
     console.log('Database connection with: '+knexConfig.connection.database);
     return data;

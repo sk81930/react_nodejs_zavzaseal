@@ -52,6 +52,19 @@ class Setting {
     return settings.map(setting => setting);
   }
 
+  static async getSettingByKey(key) {
+      try {
+        const setting = await db('settings').where({ setting_key: key }).first();
+        if(setting && setting.setting_value){
+          return setting.setting_value;
+        }
+        return null;
+      } catch (error) {
+        console.error(`Error fetching setting ${key}:`, error);
+        return null;
+      }
+  }
+
   // Update a user by ID
   // static async update(id, data) {
   //   const [user] = await db('users')

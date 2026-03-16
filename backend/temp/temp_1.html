@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #000;
+      background: #fff;
+      padding: 0;
+    }
+    
+    .page {
+      min-height: 9in;
+      padding: 0.2in;
+      padding-top: 0.8in;
+      padding-bottom: 0.8in;
+      page-break-after: always;
+      position: relative;
+    }
+    
+    .page:last-child {
+      page-break-after: avoid;
+    }
+    
+    .pdf-header {
+      position: fixed;
+      top: 0.2in;
+      left: 0.2in;
+      right: 0.2in;
+      height: 0.5in;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .pdf-header .logo {
+      width: 100px;
+      height: auto;
+      margin-right: 10px;
+    }
+    
+    .pdf-header .company-info {
+      flex: 1;
+    }
+    
+    .pdf-header .company-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 2px;
+    }
+    
+    .pdf-header .company-name .seal {
+      font-size: 14px;
+      font-style: italic;
+      font-weight: normal;
+    }
+    
+    .pdf-header .tagline {
+      font-size: 9px;
+      color: #666;
+    }
+    
+    .pdf-footer {
+      position: fixed;
+      bottom: 0.2in;
+      left: 0.2in;
+      right: 0.2in;
+      height: 0.5in;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 8px;
+      color: #666;
+      z-index: 1000;
+    }
+    
+    .pdf-footer .company-info {
+      flex: 1;
+    }
+    
+    .pdf-footer .page-info {
+      text-align: right;
+    }
+    
+    .header {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .logo-section {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-right: 15px;
+    }
+    
+    .company-info {
+      flex: 1;
+    }
+    
+    .company-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 2px;
+    }
+    
+    .company-name .seal {
+      font-size: 18px;
+      font-style: italic;
+      font-weight: normal;
+    }
+    
+    .tagline {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .page-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a90d9;
+      text-align: center;
+      margin: 10px 0;
+    }
+    
+    .property-address {
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0 20px 0;
+      color: #333;
+    }
+    
+    .blue-line {
+      width: 100%;
+      height: 2px;
+      background-color: #1a90d9;
+      margin: 10px 0 20px 0;
+    }
+    
+    .content-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 8px 0;
+      background-color: #f8f9fa;
+      border-left: 4px solid #1a90d9;
+    }
+    
+    .disclaimer-box {
+      border-left-color: #28a745;
+      background-color: #f1f9fc;
+    }
+    
+    .disclaimer-box .section-title, .warranty-box .section-title {
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    
+    .disclaimer-box p, .warranty-box p {
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    
+    .warranty-box {
+      border-left-color: #b5d56a;
+      background-color: #f8fce9;
+    }
+    
+    .purple-box {
+      border-left-color: #6f42c1;
+      background-color: #f3e5f5;
+    }
+    
+    .section-title {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    
+    .bold {
+      font-weight: bold;
+    }
+    
+    .map-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .map-image {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .badges-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .badge {
+      width: 120px;
+      height: 120px;
+      border: 3px solid #000;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .badge-text {
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    
+    .badge-main {
+      font-size: 12px;
+      font-weight: bold;
+      margin: 2px 0;
+    }
+    
+    .badge-sub {
+      font-size: 8px;
+      margin-top: 2px;
+    }
+    
+    .analysis-section {
+      margin: 8px 0;
+    }
+    
+    .analysis-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .scope-list {
+      margin: 5px 0;
+      padding-left: 15px;
+    }
+    
+    .scope-list li {
+      margin-bottom: 3px;
+    }
+    
+    .gallery-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 8px 0;
+    }
+    
+    .gallery-item {
+      text-align: center;
+    }
+    
+    .gallery-image {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 10px;
+    }
+    
+    .pricing-table th,
+    .pricing-table td {
+      border: 1px solid #ddd;
+      padding: 5px;
+      text-align: left;
+    }
+    
+    .pricing-table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .pricing-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    .totals-container {
+      margin: 8px 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .totals-container p {
+      margin: 3px 0;
+      font-size: 11px;
+    }
+    
+    .total-amount {
+      font-size: 12px !important;
+      font-weight: bold !important;
+      color: #1a90d9 !important;
+      border-top: 2px solid #1a90d9;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 0.3in;
+      left: 0.5in;
+      right: 0.5in;
+      font-size: 10px;
+      color: #666;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      padding-top: 5px;
+    }
+    
+    .footer a {
+      color: #1a90d9;
+      text-decoration: underline;
+    }
+    
+    .page-number {
+      position: absolute;
+      bottom: 0.1in;
+      right: 0.5in;
+      font-size: 10px;
+      color: #666;
+    }
+    
+    @media print {
+      .page {
+        margin: 0;
+        padding: 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+ 
+
+  <!-- Page 1: Important Notes -->
+  <div class="page">
+    <div class="page-title">Estimate #EU-0001: Important Notes</div>
+    
+      <div class="content-box disclaimer-box">
+          <div class="section-title"><b>Disclaimer</b>: Please read the job scope and all the information in the estimate and addendum (hereinafter jointly &#34;Estimate&#34; thoroughly to make sure it meets your expectations. We pride ourselves on preparing very detailed and complete estimates so you do not have to make assumptions. If it&#39;s not in the Estimate, then it&#39;s not part of the scope of work and it will not be done. If there&#39;s missing information, omissions,and/or contradictions with what you expect and/or what you were told by the estimator or anyone else,please let us know and do NOT sign the Estimate.
+
+This Estimate, once signed by you, is a legal document. It&#39;s final, it&#39;s complete, and it&#39;s the only information and job scope you should rely on. Any revisions and modifications to the Estimate must be done ONLY in writing. You should not rely on any verbal statements or promises. If you do not understand any part of the Estimate, do not sign it until you have a full understanding of the Estimate and all the documents submitted to you.
+
+Unless clearly specified, this Estimate does not include removal of debris, soil, nor any object from the work area. Nor does it include patching, sanding, taping, painting, finishing work, or reinstallations of any kind (whether the objects, materials, and/or surfaces were initially removed by Zavza Seal or anyone else).
+
+If you need such services and they are not part of the scope of work, please let us know in advance so we can add them to the Estimate and ensure we send the right construction crew to your location. If additional work is needed during or after the construction, it will be priced separately.
+
+Signing this document finalizes this sale in accordance with the itemized project description. You may cancel this transaction any time prior to midnight three calendar days after you signed this Estimate. This Estimate is valid for 14 days and may be withdrawn at any time.</div>
+      </div>
+    
+    
+      <div class="content-box warranty-box">
+        <div class="section-title"><b>Warranty</b>: We hereby warrant that all labor and materials furnished and work performed by Zavza Seal LLC for Sam at 35 E 4th St, New York, NY 10012, United States  will be free from defects due to defective materials or workmanship for a period of Forty (40) years from the date of completion. Should any defect develop in the materials furnished or work performed due to improper materials or workmanship, we shall fix the defect at no expense to the owner. Our liability shall only be limited to OUR WORK and OUR MATERIALS. This Warranty is only valid and applies to the specific surfaces we worked on and should not be interpreted as a warranty for other areas or other surfaces we did not work on. Our liability shall be limited to the cost of fixing the defect, but not to any incidental or related damages as a result of the defect. Nothing in the above shall be deemed to apply to work that has been abused or neglected by the owner or other people</div>
+      </div>
+    
+  </div>
+  
+  <!-- Page 2: Addendum -->
+  <div class="page">
+    <!-- <div class="header">
+      <div class="logo-section">
+        <img src="https://react.zavzaseal.com/backend/public/zavzalogo.jpeg" alt="zavzaSeal Logo" class="logo" />
+        <div class="company-info">
+          <div class="company-name">
+            zavza<span class="seal">Seal</span>
+          </div>
+          <div class="tagline">Waterproofing, Concrete & Insulation Done Right</div>
+        </div>
+      </div>
+    </div> -->
+    
+    <div class="page-title">Addendum to Estimate #EU-0001</div>
+    <div class="blue-line"></div>
+    <div class="property-address">PROPERTY ADDRESS: 35 E 4th St, New York, NY 10012, United States</div>
+    
+    <div class="map-container">
+      
+        <img src="https://react.zavzaseal.com/backend/public/placeholder-map.jpg" alt="Property Map" class="map-image" />
+      
+    </div>
+    
+    <div class="badges-container">
+      <div class="badge">
+        <div class="badge-text">zavzaSeal</div>
+        <div class="badge-text">Waterproofing, Concrete & Insulation Done Right</div>
+        <div class="badge-main">10 Year Warranty</div>
+        <div class="badge-sub">We Stand Behind Our Work</div>
+      </div>
+      <div class="badge">
+        <div class="badge-text">zavzaSeal</div>
+        <div class="badge-text">Waterproofing, Concrete & Insulation Done Right</div>
+        <div class="badge-main">LICENSED & INSURED</div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- Dynamic Subject Area Pages -->
+  
+    
+      <div class="page">
+        <!-- <div class="header">
+          <div class="logo-section">
+            <img src="https://react.zavzaseal.com/backend/public/zavzalogo.jpeg" alt="zavzaSeal Logo" class="logo" />
+            <div class="company-info">
+              <div class="company-name">
+                zavza<span class="seal">Seal</span>
+              </div>
+              <div class="tagline">Waterproofing, Concrete & Insulation Done Right</div>
+            </div>
+          </div>
+        </div> -->
+        
+        <div class="page-title">Subject Area</div>
+        
+        <div class="content-box purple-box">
+          <div class="analysis-section">
+            <div class="analysis-title">Item Details:</div>
+            <p><strong>Description:</strong> &lt;p&gt;&lt;strong&gt;Analysis: &lt;/strong&gt;Two of our senior estimators visited the Subject Area on April 19, 2025 to provide a free estimate. Owner reports water intrusion through the Subject Area&#39;s adjacent door.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Upon close examination of the Subject Area, the determined that the concrete slab is not pitched correctly and the existing drain is in working order. We therefore propose the following scope of work:&amp;nbsp;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;We shall demolish and dispose of the existing concrete slab.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall excavate and remove and dispose of the existing dry well.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall then excavate deeper to prepare for the installation of a much larger dry well.&amp;nbsp;&lt;/li&gt;&lt;li&gt;At the center of the bottom landing, we shall install a new 50-gallon dry well on top of a well compacted 2-foot bed of gravel.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall install a soil separator on top of the compacted gravel only the area around the bottom of the dry well, but not directly on the bottom of the dry well as to allow free flow of water to the gravel.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall backfill and compact the soil thoroughly.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall pour 4,000 PSI cement to construct a new steel-reinforced 4&#34; thick concrete slab pitched perfectly to the center to prevent mold buildup.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall install the steel grate in the center of the concrete slab to complete.&lt;/li&gt;&lt;/ul&gt;</p>
+            
+              <p><strong>Quantity:</strong> 1</p>
+            
+            
+              <p><strong>Unit Price:</strong> $200.00</p>
+            
+            
+              <p><strong>Total Amount:</strong> $100.00</p>
+            
+            
+              <p><strong>Account:</strong> Services</p>
+            
+            
+              <p><strong>Tax Rate:</strong> Tax Exempt%</p>
+            
+          </div>
+          
+          
+            <div class="analysis-section">
+              <div class="analysis-title">Project Images:</div>
+              <div class="gallery-container">
+                
+                  <div class="gallery-item">
+                    <img src="https://react.zavzaseal.com/backend/public/estimation/1757929294091_koala_big-scaled.jpg" 
+                         alt="Project Image 1" 
+                         class="gallery-image" />
+                  </div>
+                
+              </div>
+            </div>
+          
+        </div>
+        
+      </div>
+    
+  
+  
+  <!-- Pricing Summary Page -->
+  <div class="page">
+    <!-- <div class="header">
+      <div class="logo-section">
+        <img src="https://react.zavzaseal.com/backend/public/zavzalogo.jpeg" alt="zavzaSeal Logo" class="logo" />
+        <div class="company-info">
+          <div class="company-name">
+            zavza<span class="seal">Seal</span>
+          </div>
+          <div class="tagline">Waterproofing, Concrete & Insulation Done Right</div>
+        </div>
+      </div>
+    </div> -->
+    
+    <div class="page-title">Pricing Summary</div>
+    
+    <div class="content-box">
+      <div class="analysis-section">
+        <div class="analysis-title">Estimate Details:</div>
+        <p><strong>Estimate Number:</strong> EU-0001</p>
+        <p><strong>Issue Date:</strong> 15/9/2025</p>
+        <p><strong>Expiry Date:</strong> 25/9/2025</p>
+        <p><strong>Customer:</strong> Sam</p>
+        <p><strong>Address:</strong> 35 E 4th St, New York, NY 10012, United States</p>
+      </div>
+      
+      
+        <div class="analysis-section">
+          <div class="analysis-title">Itemized Breakdown:</div>
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>item 1</td>
+                  <td>&lt;p&gt;&lt;strong&gt;Analysis: &lt;/strong&gt;Two of our senior estimators visited the Subject Area on April 19, 2025 to provide a free estimate. Owner reports water intrusion through the Subject Area&#39;s adjacent door.&amp;nbsp;&lt;/p&gt;&lt;p&gt;Upon close examination of the Subject Area, the determined that the concrete slab is not pitched correctly and the existing drain is in working order. We therefore propose the following scope of work:&amp;nbsp;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;We shall demolish and dispose of the existing concrete slab.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall excavate and remove and dispose of the existing dry well.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall then excavate deeper to prepare for the installation of a much larger dry well.&amp;nbsp;&lt;/li&gt;&lt;li&gt;At the center of the bottom landing, we shall install a new 50-gallon dry well on top of a well compacted 2-foot bed of gravel.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall install a soil separator on top of the compacted gravel only the area around the bottom of the dry well, but not directly on the bottom of the dry well as to allow free flow of water to the gravel.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall backfill and compact the soil thoroughly.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall pour 4,000 PSI cement to construct a new steel-reinforced 4&#34; thick concrete slab pitched perfectly to the center to prevent mold buildup.&amp;nbsp;&lt;/li&gt;&lt;li&gt;We shall install the steel grate in the center of the concrete slab to complete.&lt;/li&gt;&lt;/ul&gt;</td>
+                  <td>1</td>
+                  <td>$200.00</td>
+                  <td>$100.00</td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      
+      
+      
+        <div class="analysis-section">
+          <div class="analysis-title">Total Summary:</div>
+          <div class="totals-container">
+            
+              <p><strong>Subtotal:</strong> $200.00</p>
+            
+            
+            
+              <p><strong>Discount:</strong> -$100.00</p>
+            
+            
+              <p class="total-amount"><strong>Total Amount:</strong> $100.00</p>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  </div>
+</body>
+</html>

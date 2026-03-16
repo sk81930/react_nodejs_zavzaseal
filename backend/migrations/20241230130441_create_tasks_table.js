@@ -9,8 +9,8 @@ exports.up = function(knex) {
       table.bigInteger('user_id').notNullable();
       table.bigInteger('deal_id');
       table.string('title');
-      table.datetime('start_datetime').notNullable();
-      table.datetime('end_datetime').notNullable();
+      table.string('start_date').notNullable();
+      table.string('end_date').notNullable();
       table.string('status');
       table.string('priority');
       table.string('color');

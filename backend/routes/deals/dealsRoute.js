@@ -17,5 +17,28 @@ router.get("/getDeals", Middleware.authenticate, (req, res, next) => {
       response.sendResponse([], false, err.message, 201);
    }
 });
+router.get("/getDealsData", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await bitrixDealsController.getDealsData(req.query,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+router.get("/getDealById/:id", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await bitrixDealsController.getDealById(req.params,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+
+
 
 module.exports = router

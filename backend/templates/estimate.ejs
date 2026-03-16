@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #000;
+      background: #fff;
+      padding: 0;
+    }
+    
+    /* Image optimization for smaller PDF size */
+    img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      -ms-interpolation-mode: nearest-neighbor;
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .page {
+      page-break-after: always;
+      position: relative;
+    }
+    
+    .page:last-child {
+      page-break-after: avoid;
+    }
+    
+    /* Prevent empty pages */
+    .page:empty {
+      display: none;
+    }
+    
+    /* Better page break control */
+    .gallery-section {
+      page-break-inside: avoid;
+    }
+    
+    .content-box {
+      page-break-inside: avoid;
+    }
+    
+    .pdf-header {
+      position: fixed;
+      top: 0.2in;
+      left: 0.2in;
+      right: 0.2in;
+      height: 0.5in;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .pdf-header .logo {
+      width: 100px;
+      height: auto;
+      margin-right: 10px;
+    }
+    
+    .pdf-header .company-info {
+      flex: 1;
+    }
+    
+    .pdf-header .company-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 2px;
+    }
+    
+    .pdf-header .company-name .seal {
+      font-size: 16px;
+      font-style: italic;
+      font-weight: normal;
+    }
+    
+    .pdf-header .tagline {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    .pdf-footer {
+      position: fixed;
+      bottom: 0.2in;
+      left: 0.2in;
+      right: 0.2in;
+      height: 0.5in;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #666;
+      z-index: 1000;
+    }
+    
+    .pdf-footer .company-info {
+      flex: 1;
+    }
+    
+    .pdf-footer .page-info {
+      text-align: right;
+    }
+    
+    .header {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .logo-section {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-right: 15px;
+    }
+    
+    .company-info {
+      flex: 1;
+    }
+    
+    .company-name {
+      font-size: 26px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 2px;
+    }
+    
+    .company-name .seal {
+      font-size: 20px;
+      font-style: italic;
+      font-weight: normal;
+    }
+    
+    .tagline {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .page-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a90d9;
+      text-align: center;
+      margin: 10px 0;
+    }
+    
+    .property-address {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0 20px 0;
+      color: #333;
+    }
+    
+    .blue-line {
+      width: 100%;
+      height: 2px;
+      background-color: #1a90d9;
+      margin: 10px 0 20px 0;
+    }
+    
+    .content-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 8px 0;
+      background-color: #f8f9fa;
+      border-left: 4px solid #1a90d9;
+    }
+    
+    .disclaimer-box {
+      border: 3px solid #28a745;
+      background-color: #f1f9fc;
+    }
+    
+    .disclaimer-box .section-title, .warranty-box .section-title {
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    
+    .disclaimer-box p, .warranty-box p {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    .warranty-box {
+      border: 3px solid #b5d56a;
+      background-color: #f8fce9;
+    }
+    
+    .purple-box {
+      /* border-left-color: #6f42c1;
+      background-color: #f3e5f5; */
+      /* Make it look like the sample card */
+      border: 3px solid #6f42c1;
+      border-radius: 8px;
+    }
+
+    /* Remove left accent when full border is used */
+    .purple-box.content-box {
+      border-left: 3px solid #6f42c1;
+    }
+
+    .exhibit-textarea-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .exhibit-textarea-content {
+      font-size: 16px;
+      line-height: 1.5;
+      /* color: #555; */
+    }
+    
+    .section-title {
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    
+    .bold {
+      font-weight: bold;
+    }
+    
+    .map-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .map-image {
+      max-width: 100%;
+      height: 480px;
+      border: 4px solid #000000;
+      border-radius: 4px;
+      image-rendering: -webkit-optimize-contrast;
+      object-fit: cover;
+    }
+    .badges-container {
+      display: flex;
+      justify-content: center;
+      gap: 1px;
+      margin: 20px 0;
+    }
+    
+    .badge {
+      width: 120px;
+      height: 120px;
+      border: 3px solid #000;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .badge-text {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    
+    .badge-main {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 2px 0;
+    }
+    
+    .badge-sub {
+      font-size: 10px;
+      margin-top: 2px;
+    }
+    
+    .analysis-section {
+      margin: 8px 0;
+    }
+    
+    .analysis-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .scope-list {
+      margin: 5px 0;
+      padding-left: 15px;
+    }
+    
+    .scope-list li {
+      margin-bottom: 3px;
+    }
+    
+    .gallery-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 8px 0;
+    }
+    
+    .gallery-item {
+      text-align: center;
+    }
+    
+    .gallery-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      image-rendering: -webkit-optimize-contrast;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+    
+    .pricing-table th,
+    .pricing-table td {
+      border: 1px solid #ddd;
+      padding: 5px;
+      text-align: left;
+    }
+    
+    .pricing-table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .pricing-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    
+    .totals-container {
+      margin: 8px 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .totals-container p {
+      margin: 3px 0;
+      font-size: 13px;
+    }
+    
+    .total-amount {
+      font-size: 14px !important;
+      font-weight: bold !important;
+      color: #1a90d9 !important;
+      border-top: 2px solid #1a90d9;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    
+    .footer {
+      position: absolute;
+      bottom: 0.3in;
+      left: 0.5in;
+      right: 0.5in;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      padding-top: 5px;
+    }
+    
+    .footer a {
+      color: #1a90d9;
+      text-decoration: underline;
+    }
+    
+    .page-number {
+      position: absolute;
+      bottom: 0.1in;
+      right: 0.5in;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    /* Item Title and Description Styles */
+    .item-title-section {
+      margin-bottom: 1px;
+      padding-bottom: 1px;
+      /* border-bottom: 1px solid #e0e0e0; */
+    }
+    
+    .item-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    
+    .item-description {
+      font-size: 14px;
+      line-height: 1.5;
+      /* color: #555; */
+    }
+    
+    .item-description ul, .item-description ol {
+      margin: 2px 0;
+      padding-left: 40px;
+    }
+    
+    .item-description li {
+      margin: 1px 0;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    /* Ensure list items with data-list attribute display markers correctly */
+    .item-description ol[data-list] li,
+    .item-description ul[data-list] li {
+      list-style: none;
+    }
+
+    .item-description ol[data-list] li::before,
+    .item-description ul[data-list] li::before {
+      display: inline-block;
+      text-align: center;
+      width: 1.2em;
+      margin-right: 4px;
+      margin-left: -1.5em;
+    }
+
+    /* Custom ordered list styles */
+    ol[data-list="decimal"] {
+      counter-reset: list-0;
+    }
+    ol[data-list="decimal"] li {
+      counter-increment: list-0;
+    }
+    ol[data-list="decimal"] li::before {
+      content: counter(list-0, decimal) '.';
+    }
+    ol[data-list="decimal"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+    ol[data-list="decimal"] li.ql-indent-1::before { content: counter(list-1, decimal) '.'; }
+    ol[data-list="decimal"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+    ol[data-list="decimal"] li.ql-indent-2::before { content: counter(list-2, decimal) '.'; }
+    ol[data-list="decimal"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+    ol[data-list="decimal"] li.ql-indent-3::before { content: counter(list-3, decimal) '.'; }
+    ol[data-list="decimal"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+    ol[data-list="decimal"] li.ql-indent-4::before { content: counter(list-4, decimal) '.'; }
+
+    ol[data-list="lower-alpha"] {
+      counter-reset: list-0;
+    }
+    ol[data-list="lower-alpha"] li {
+      counter-increment: list-0;
+    }
+    ol[data-list="lower-alpha"] li::before {
+      content: counter(list-0, lower-alpha) '.';
+    }
+    ol[data-list="lower-alpha"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+    ol[data-list="lower-alpha"] li.ql-indent-1::before { content: counter(list-1, lower-alpha) '.'; }
+    ol[data-list="lower-alpha"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+    ol[data-list="lower-alpha"] li.ql-indent-2::before { content: counter(list-2, lower-alpha) '.'; }
+    ol[data-list="lower-alpha"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+    ol[data-list="lower-alpha"] li.ql-indent-3::before { content: counter(list-3, lower-alpha) '.'; }
+    ol[data-list="lower-alpha"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+    ol[data-list="lower-alpha"] li.ql-indent-4::before { content: counter(list-4, lower-alpha) '.'; }
+
+    ol[data-list="upper-alpha"] {
+      counter-reset: list-0;
+    }
+    ol[data-list="upper-alpha"] li {
+      counter-increment: list-0;
+    }
+    ol[data-list="upper-alpha"] li::before {
+      content: counter(list-0, upper-alpha) '.';
+    }
+    ol[data-list="upper-alpha"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+    ol[data-list="upper-alpha"] li.ql-indent-1::before { content: counter(list-1, upper-alpha) '.'; }
+    ol[data-list="upper-alpha"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+    ol[data-list="upper-alpha"] li.ql-indent-2::before { content: counter(list-2, upper-alpha) '.'; }
+    ol[data-list="upper-alpha"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+    ol[data-list="upper-alpha"] li.ql-indent-3::before { content: counter(list-3, upper-alpha) '.'; }
+    ol[data-list="upper-alpha"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+    ol[data-list="upper-alpha"] li.ql-indent-4::before { content: counter(list-4, upper-alpha) '.'; }
+
+    ol[data-list="lower-roman"] {
+      counter-reset: list-0;
+    }
+    ol[data-list="lower-roman"] li {
+      counter-increment: list-0;
+    }
+    ol[data-list="lower-roman"] li::before {
+      content: counter(list-0, lower-roman) '.';
+    }
+    ol[data-list="lower-roman"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+    ol[data-list="lower-roman"] li.ql-indent-1::before { content: counter(list-1, lower-roman) '.'; }
+    ol[data-list="lower-roman"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+    ol[data-list="lower-roman"] li.ql-indent-2::before { content: counter(list-2, lower-roman) '.'; }
+    ol[data-list="lower-roman"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+    ol[data-list="lower-roman"] li.ql-indent-3::before { content: counter(list-3, lower-roman) '.'; }
+    ol[data-list="lower-roman"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+    ol[data-list="lower-roman"] li.ql-indent-4::before { content: counter(list-4, lower-roman) '.'; }
+
+    ol[data-list="upper-roman"] {
+      counter-reset: list-0;
+    }
+    ol[data-list="upper-roman"] li {
+      counter-increment: list-0;
+    }
+    ol[data-list="upper-roman"] li::before {
+      content: counter(list-0, upper-roman) '.';
+    }
+    ol[data-list="upper-roman"] li.ql-indent-1 { counter-reset: list-1; counter-increment: list-1; }
+    ol[data-list="upper-roman"] li.ql-indent-1::before { content: counter(list-1, upper-roman) '.'; }
+    ol[data-list="upper-roman"] li.ql-indent-2 { counter-reset: list-2; counter-increment: list-2; }
+    ol[data-list="upper-roman"] li.ql-indent-2::before { content: counter(list-2, upper-roman) '.'; }
+    ol[data-list="upper-roman"] li.ql-indent-3 { counter-reset: list-3; counter-increment: list-3; }
+    ol[data-list="upper-roman"] li.ql-indent-3::before { content: counter(list-3, upper-roman) '.'; }
+    ol[data-list="upper-roman"] li.ql-indent-4 { counter-reset: list-4; counter-increment: list-4; }
+    ol[data-list="upper-roman"] li.ql-indent-4::before { content: counter(list-4, upper-roman) '.'; }
+
+    /* Custom unordered list styles */
+    ul[data-list="disc"] li::before {
+      content: '•';
+    }
+    ul[data-list="disc"] li.ql-indent-1::before { content: '•'; }
+    ul[data-list="disc"] li.ql-indent-2::before { content: '•'; }
+    ul[data-list="disc"] li.ql-indent-3::before { content: '•'; }
+    ul[data-list="disc"] li.ql-indent-4::before { content: '•'; }
+
+    ul[data-list="circle"] li::before {
+      content: '○';
+    }
+    ul[data-list="circle"] li.ql-indent-1::before { content: '○'; }
+    ul[data-list="circle"] li.ql-indent-2::before { content: '○'; }
+    ul[data-list="circle"] li.ql-indent-3::before { content: '○'; }
+    ul[data-list="circle"] li.ql-indent-4::before { content: '○'; }
+
+    ul[data-list="square"] li::before {
+      content: '■';
+    }
+    ul[data-list="square"] li.ql-indent-1::before { content: '■'; }
+    ul[data-list="square"] li.ql-indent-2::before { content: '■'; }
+    ul[data-list="square"] li.ql-indent-3::before { content: '■'; }
+    ul[data-list="square"] li.ql-indent-4::before { content: '■'; }
+
+    ul[data-list="arrow"] li::before {
+      content: '→';
+    }
+    ul[data-list="arrow"] li.ql-indent-1::before { content: '→'; }
+    ul[data-list="arrow"] li.ql-indent-2::before { content: '→'; }
+    ul[data-list="arrow"] li.ql-indent-3::before { content: '→'; }
+    ul[data-list="arrow"] li.ql-indent-4::before { content: '→'; }
+
+    ul[data-list="tick"] li::before {
+      content: '✓';
+    }
+    ul[data-list="tick"] li.ql-indent-1::before { content: '✓'; }
+    ul[data-list="tick"] li.ql-indent-2::before { content: '✓'; }
+    ul[data-list="tick"] li.ql-indent-3::before { content: '✓'; }
+    ul[data-list="tick"] li.ql-indent-4::before { content: '✓'; }
+    
+    .item-description p {
+      margin: 1px 0;
+    }
+    
+    .item-description h1,
+    .item-description h2,
+    .item-description h3,
+    .item-description h4,
+    .item-description h5,
+    .item-description h6 {
+      margin: 12px 0 8px 0;
+      font-weight: bold;
+    }
+    
+    /* Gallery Box Styles */
+    /* .gallery-box {
+      margin-top: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #1a90d9;
+    } */
+    
+    .gallery-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a90d9;
+      margin: 0;
+    }
+    
+    .gallery-count {
+      font-size: 12px;
+      color: #666;
+      background: #e9ecef;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    
+    /* Gallery Sections - Two Boxes */
+    /* .gallery-section {
+      margin-bottom: 10px;
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    } */
+    
+    .gallery-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .gallery-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .gallery-row {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .gallery-row.exhibit-full-width .gallery-item-large {
+      flex: 1;
+      height: 380px;
+    }
+    .gallery-row.exhibit-two-column .gallery-item-large {
+      flex: 1;
+      height: 380px;
+    }
+    .gallery-row.two-column .gallery-item-large {
+      flex: 1;
+      height: 430px;
+    }
+    
+    .gallery-row.full-width .gallery-item-large {
+      flex: 1;
+      height: 430px;
+    }
+   
+    .only-one-column .gallery-item-large{
+      height: 800px !important;
+      margin-top: 65px !important;
+    }
+    .only-one-column-exhibit .gallery-item-large{
+      height: 760px !important;
+    }
+    
+    
+    .gallery-item-large {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      /* box-shadow: 0 3px 12px rgba(0,0,0,0.15); */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+      border: 3px solid #000;
+      margin-top: 20px;
+    }
+    
+    .gallery-item-large:hover {
+      transform: translateY(-2px);
+      /* box-shadow: 0 5px 20px rgba(0,0,0,0.2); */
+    }
+    
+    .gallery-image-wrapper-large {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .gallery-image-large {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+      border-radius: 0;
+      image-rendering: -webkit-optimize-contrast;
+      box-shadow: none;
+    }
+
+    /* Center the main content box vertically on subject-area pages only */
+    .subject-page {
+      display: flex;
+      flex-direction: column;
+      /* Give the page real height so flex centering works in PDF */
+      min-height: 9.5in;
+    }
+    .first-page {
+      display: flex;
+      flex-direction: column;
+      /* Give the page real height so flex centering works in PDF */
+      min-height: 9.6in;
+    }
+    .first-page .content-box-main-section {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .subject-page .content-box-main-section {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    
+    .image-overlay-large {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      /* box-shadow: 0 2px 6px rgba(0,0,0,0.3); */
+    }
+    
+    .image-number-large {
+      line-height: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .gallery-row.two-column {
+        flex-direction: column;
+      }
+      
+      .gallery-row.two-column .gallery-item-large {
+        height: 220px;
+      }
+      
+      .gallery-row.full-width .gallery-item-large {
+        height: 260px;
+      }
+    }
+    .ql-align-center {
+        text-align: center;
+    }
+    .ql-align-right {
+        text-align: right;
+    }
+    .ql-align-left {
+        text-align: left;
+    }
+
+
+    @media print {
+      .page {
+        margin: 0;
+        padding: 0 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+ 
+
+  <!-- Page 1: Important Notes -->
+  <div class="page first-page">
+    <div class="content-box-main-section">
+      <div class="page-title">Estimate <%= "#" + estimate.id %>: Important Notes</div>
+      <% if (disclaimerText && disclaimerText !== '') { %>
+        <div class="content-box disclaimer-box">
+            <div class="section-title" style="white-space: pre-wrap;"><b>Disclaimer</b>: <%- disclaimerText ? disclaimerText.replace(/\n/g, ' ') : '' %></div>
+        </div>
+      <% } %>
+      <% if (warrantyText && warrantyText !== '') { %>
+        <div class="content-box warranty-box">
+          <div class="section-title" style="white-space: pre-wrap;"><b>Warranty</b>: <%- warrantyText %></div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  
+  <!-- Page 2: Addendum -->
+  <div class="page">
+    <!-- <div class="header">
+      <div class="logo-section">
+        <img src="https://react.zavzaseal.com/backend/public/zavzalogo.jpeg" alt="zavzaSeal Logo" class="logo" />
+        <div class="company-info">
+          <div class="company-name">
+            zavza<span class="seal">Seal</span>
+          </div>
+          <div class="tagline">Waterproofing, Concrete & Insulation Done Right</div>
+        </div>
+      </div>
+    </div> -->
+    
+    <div class="page-title" style="margin: 10px 0;border-bottom: 2px solid #1a90d9;padding-bottom: 7px;">Addendum to Estimate <%= "#" + estimate.id %></div>
+    <!-- <div class="blue-line"></div> -->
+    <% if (customer_address && customer_address !== '') { %>
+      <div class="property-address" style="font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #5f5584;">
+        <span style="font-size: 16px; font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #5f5584;">PROPERTY ADDRESS:</span>
+        <span style="font-size: 22px; font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #5f5584;margin-left: 4px;"><%= customer_address %></span>
+      </div>
+    <% } %>
+    <div class="map-container">
+      <% if (address_image) { %>
+        <img src="<%= address_image %>" alt="Property Map" class="map-image" />
+      <% } %>
+    </div>
+    
+    <div class="badges-container" style="align-items: baseline;">
+      <% if (warranty_year && warranty_year == '5') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty5-new2.png" alt="warranty Logo 5 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% }else if (warranty_year && warranty_year == '10') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty10-new2.png" alt="warranty Logo 10 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% }else if (warranty_year && warranty_year == '20') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty20-new2.png" alt="warranty Logo 20 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% }else if (warranty_year && warranty_year == '30') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty30-new2.png" alt="warranty Logo 30 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% }else if (warranty_year && warranty_year == '40') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty40-new2.png" alt="warranty Logo 40 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% }else if (warranty_year && warranty_year == '50') { %>
+        <img src="https://react.zavzaseal.com/backend/public/warty50-new2.png" alt="warranty Logo 50 years" class="logo-warranty" style="width: 230px; height: auto;" />
+      <% } %>
+      <img src="https://react.zavzaseal.com/backend/public/zavzaiic2-new2.png" alt="Licensed & Insured Logo" class="logo-warranty" style="width: 230px; height: auto;" />
+    </div>
+    
+  </div>
+  
+  <!-- Dynamic Subject Area Pages -->
+  <% if (items && items.length > 0) { 
+
+    let itemGalleryImages = [];
+    
+  %>
+    <% items.forEach((item, index) => { %>
+      <% itemGalleryImages = (item.gallery_images || []).filter(image => image); %>
+        <% if (parseFloat(item.amount || 0) >= 0) { %>
+          <div class="page subject-page">
+            <!-- <div class="header">
+              <div class="logo-section">
+                <img src="https://react.zavzaseal.com/backend/public/zavzalogo.jpeg" alt="zavzaSeal Logo" class="logo" />
+                <div class="company-info">
+                  <div class="company-name">
+                    zavza<span class="seal">Seal</span>
+                  </div>
+                  <div class="tagline">Waterproofing, Concrete & Insulation Done Right</div>
+                </div>
+              </div>
+            </div> -->
+            
+            
+            
+            <!-- Title and Description Box -->
+            <div class="content-box-main-section">
+              <%
+                const rawDesc = item.description || 'No description provided';
+                const descriptionParts = rawDesc.split(/----newBox----/i).map(s => s.trim()).filter(s => s.length > 0);
+                if (descriptionParts.length === 0) descriptionParts.push('No description provided');
+              %>
+              <% descriptionParts.forEach((part) => { %>
+              <div class="content-box purple-box">
+                <div class="analysis-section">
+                  <div class="item-title-section">
+                    <div class="item-description">
+                      <p><%- part.replace(/<br\s*\/?>/gi, '<div style="height: 8px;"></div>') %></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+
+              <% if (itemGalleryImages.length > 0) { %>
+                <%
+                  const descriptionText = (item.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+                  const descriptionLength = descriptionText.length;
+                  const hasNewBoxes = descriptionParts.length > 1;
+                  const isShortDescription = descriptionLength < 1500;
+                %>
+                <% if (isShortDescription && itemGalleryImages.length > 0) { %>
+                  <div class="gallery-box">
+                    <div class="gallery-section">
+                      <div class="gallery-layout">
+                        <% 
+                          const firstImage = itemGalleryImages[0];
+                          let height = 700;
+                          if (hasNewBoxes) {
+                            height = 500;
+                          } else if (descriptionLength < 200) {
+                            height = 700;
+                          } else if (descriptionLength >= 200 && descriptionLength < 1700) {
+                            const base = 600;
+                            const threshold = 200;
+                            const minHeight = 300;
+                            const shrinkSteps = Math.floor((descriptionLength - threshold) / 180);
+                            height = base - (shrinkSteps * 50);
+                            if (height < minHeight) height = minHeight;
+                          } else {
+                            height = 300;
+                          }
+                        %>
+                        <% if (firstImage) { %>
+                          <div class="gallery-row full-width first-image-row">
+                            <div class="gallery-item-large" style="height: <%= height %>px !important;">
+                              <div class="gallery-image-wrapper-large">
+                                <img src="<%= firstImage.path ? 'https://react.zavzaseal.com/backend' + firstImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                    alt="Project Image 1" 
+                                    class="gallery-image-large" />
+                                <div class="image-overlay-large">
+                                  <span class="image-number-large">1</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                  <% 
+                    itemGalleryImages = itemGalleryImages.slice(1); 
+                  %>
+                <% } %>
+              <% } %>
+            </div>  
+            
+            <!-- Gallery Images Box -->
+          </div>
+        <% } %>
+      
+      <% if (itemGalleryImages.length > 0) { %>
+        <% for (let i = 0; i < itemGalleryImages.length; i += 3) { 
+             const group = itemGalleryImages.slice(i, i + 3);
+             const baseNumber = i;
+        %>
+          <div class="page">
+            <div class="gallery-box">
+              <div class="gallery-section">
+                <div class="gallery-layout">
+                  <% if (group.length === 1) { 
+                       const image = group[0];
+                  %>
+                    <div class="gallery-row full-width only-one-column">
+                      <div class="gallery-item-large">
+                        <div class="gallery-image-wrapper-large">
+                          <img src="<%= image.path ? 'https://react.zavzaseal.com/backend' + image.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                               alt="Project Image <%= baseNumber + 1 %>" 
+                               class="gallery-image-large" />
+                          <div class="image-overlay-large">
+                            <span class="image-number-large"><%= baseNumber + 1 %></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% } else if (group.length === 2) { 
+                    const firstImage = group[0];
+                    const secondImage = group[1];
+                  %>
+                    <div class="gallery-row full-width only-two-column">
+                      <div class="gallery-item-large">
+                        <div class="gallery-image-wrapper-large">
+                          <img src="<%= firstImage.path ? 'https://react.zavzaseal.com/backend' + firstImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                              alt="Project Image <%= baseNumber + 1 %>" 
+                              class="gallery-image-large" />
+                          <div class="image-overlay-large">
+                            <span class="image-number-large"><%= baseNumber + 1 %></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="gallery-row full-width only-two-column">
+                      <div class="gallery-item-large">
+                        <div class="gallery-image-wrapper-large">
+                          <img src="<%= secondImage.path ? 'https://react.zavzaseal.com/backend' + secondImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                               alt="Project Image <%= baseNumber + 1 %>" 
+                               class="gallery-image-large" />
+                          <div class="image-overlay-large">
+                            <span class="image-number-large"><%= baseNumber + 1 %></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% } else { %>
+                    <div class="gallery-row two-column">
+                      <% const firstImage = group[0]; %>
+                      <% if (firstImage) { %>
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= firstImage.path ? 'https://react.zavzaseal.com/backend' + firstImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                 alt="Project Image <%= baseNumber + 1 %>" 
+                                 class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 1 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                      <% const secondImage = group[1]; %>
+                      <% if (secondImage) { %>
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= secondImage.path ? 'https://react.zavzaseal.com/backend' + secondImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                 alt="Project Image <%= baseNumber + 2 %>" 
+                                 class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 2 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                    <% const thirdImage = group[2]; %>
+                    <% if (thirdImage) { %>
+                      <div class="gallery-row full-width">
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= thirdImage.path ? 'https://react.zavzaseal.com/backend' + thirdImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                 alt="Project Image <%= baseNumber + 3 %>" 
+                                 class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 3 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+    <% }); %>
+  <% } %>
+  
+  <!-- Dynamic Exhibit Pages -->
+  <% if (exhibits && exhibits.length > 0) { %>
+    <% exhibits.forEach((exhibit, index) => { %>
+      <div class="page">
+        <!-- Exhibit Title Box -->
+        <div class="content-box purple-box">
+          <div class="analysis-section">
+            <div class="page-title"  style="color:#000">
+              <% if (exhibit.name && exhibit.name.trim() !== '') { %>
+                Exhibit <%= exhibit.name %>
+              <% }else{ %>
+                Exhibit <%= String.fromCharCode(65 + index) %>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Exhibit Textareas Box (styled like the sample card) -->
+        <% if (exhibit.textareas && exhibit.textareas.length > 0) { %>
+          <% exhibit.textareas.forEach((textarea, textareaIndex) => { %>
+            <% if (textarea.content && textarea.content.trim() !== '' && textarea.content.trim() !== '<p></p>' && textarea.content.trim() !== '<p><br></p>') { %>
+              <div class="content-box purple-box">
+                <div class="analysis-section">
+                  <!-- <% if (textarea.title && textarea.title.trim() !== '') { %>
+                    <div class="exhibit-textarea-title"><%= textarea.title %></div>
+                  <% } %> -->
+                  <div class="exhibit-textarea-content">
+                    <%- textarea.content %>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          <% }); %>
+        <% } %>
+        <% const exhibitGalleryImages = (exhibit.gallery_images || []).filter(image => image); %>
+        <% if (exhibitGalleryImages.length > 0) { %>
+          <% for (let i = 0; i < exhibitGalleryImages.length; i += 3) { 
+              const group = exhibitGalleryImages.slice(i, i + 3);
+              const baseNumber = i;
+          %>
+            <div class="page2">
+              <div class="gallery-box">
+                <div class="gallery-section">
+                  <div class="gallery-layout">
+                    <% if (group.length === 1) { 
+                        const image = group[0];
+                    %>
+                      <div class="gallery-row exhibit-full-width only-one-column-exhibit">
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= image.path ? 'https://react.zavzaseal.com/backend' + image.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                alt="Exhibit Image <%= baseNumber + 1 %>" 
+                                class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 1 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% }else if (group.length === 2) { 
+                      const firstImage = group[0];
+                      const secondImage = group[1];
+                    %>
+                      <div class="gallery-row exhibit-full-width only-two-column">
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= firstImage.path ? 'https://react.zavzaseal.com/backend' + firstImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                alt="Project Image <%= baseNumber + 1 %>" 
+                                class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 1 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="gallery-row exhibit-full-width only-two-column">
+                        <div class="gallery-item-large">
+                          <div class="gallery-image-wrapper-large">
+                            <img src="<%= secondImage.path ? 'https://react.zavzaseal.com/backend' + secondImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                alt="Project Image <%= baseNumber + 1 %>" 
+                                class="gallery-image-large" />
+                            <div class="image-overlay-large">
+                              <span class="image-number-large"><%= baseNumber + 1 %></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% } else { %>
+                      <div class="gallery-row exhibit-two-column">
+                        <% const firstImage = group[0]; %>
+                        <% if (firstImage) { %>
+                          <div class="gallery-item-large">
+                            <div class="gallery-image-wrapper-large">
+                              <img src="<%= firstImage.path ? 'https://react.zavzaseal.com/backend' + firstImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                  alt="Exhibit Image <%= baseNumber + 1 %>" 
+                                  class="gallery-image-large" />
+                              <div class="image-overlay-large">
+                                <span class="image-number-large"><%= baseNumber + 1 %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+                        <% const secondImage = group[1]; %>
+                        <% if (secondImage) { %>
+                          <div class="gallery-item-large">
+                            <div class="gallery-image-wrapper-large">
+                              <img src="<%= secondImage.path ? 'https://react.zavzaseal.com/backend' + secondImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                  alt="Exhibit Image <%= baseNumber + 2 %>" 
+                                  class="gallery-image-large" />
+                              <div class="image-overlay-large">
+                                <span class="image-number-large"><%= baseNumber + 2 %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+                      </div>
+                      <% const thirdImage = group[2]; %>
+                      <% if (thirdImage) { %>
+                        <div class="gallery-row exhibit-full-width">
+                          <div class="gallery-item-large">
+                            <div class="gallery-image-wrapper-large">
+                              <img src="<%= thirdImage.path ? 'https://react.zavzaseal.com/backend' + thirdImage.path : 'https://react.zavzaseal.com/backend/public/placeholder-image.jpg' %>" 
+                                  alt="Exhibit Image <%= baseNumber + 3 %>" 
+                                  class="gallery-image-large" />
+                              <div class="image-overlay-large">
+                                <span class="image-number-large"><%= baseNumber + 3 %></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+    <% }); %>
+  <% } %>
+  
+</body>
+</html>

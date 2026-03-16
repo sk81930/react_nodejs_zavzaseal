@@ -105,50 +105,71 @@ class CallLogsController {
             await db('ringcentral_call_logs').where('date_time', '<', startDate).del();
 
             let page = 1;
-            let perPage = 1000;
+            let perPage = 3000;
             let end = 1;
             let counter = 0;
 
-            do {
-                const params = {
-                    dateFrom: startDate,
-                    dateTo: moment().toISOString(),
-                    page,
-                    perPage
-                };
+            const params = {
+                dateFrom: startDate,
+                dateTo: moment().toISOString(),
+                page,
+                perPage
+            };
 
-                const url = `${credentials.ringcentral_url}/restapi/v1.0/account/~/call-log`;
-                const fetchResponse = await this.fetchCallLogs(url, params, accessToken);
+            const url = `${credentials.ringcentral_url}/restapi/v1.0/account/~/call-log`;
+            const fetchResponse = await this.fetchCallLogs(url, params, accessToken);
+
+            //console.log(fetchResponse)
+
+            
+
+            if (fetchResponse.records && fetchResponse.records.length > 0) {
+                for (const dealData of fetchResponse.records) {
+                    await this.updateOrCreateReport(dealData);
+                }
+            } 
+
+
+            // do {
+            //     const params = {
+            //         dateFrom: startDate,
+            //         dateTo: moment().toISOString(),
+            //         page,
+            //         perPage
+            //     };
+
+            //     const url = `${credentials.ringcentral_url}/restapi/v1.0/account/~/call-log`;
+            //     const fetchResponse = await this.fetchCallLogs(url, params, accessToken);
 
                 
 
-                if (fetchResponse.records && fetchResponse.records.length > 0) {
-                    for (const dealData of fetchResponse.records) {
-                        await this.updateOrCreateReport(dealData);
-                    }
+            //     if (fetchResponse.records && fetchResponse.records.length > 0) {
+            //         for (const dealData of fetchResponse.records) {
+            //             await this.updateOrCreateReport(dealData);
+            //         }
 
 
-                    // Check if there is another page of records
-                    if (fetchResponse.navigation && fetchResponse.navigation.nextPage) {
-                        //console.log(fetchResponse.navigation);
-                        page++;
-                        end++;
-                    } else {
-                        break;
-                    }
-                } else {
-                    break; // Exit loop if no records found
-                }
+            //         // Check if there is another page of records
+            //         if (fetchResponse.navigation && fetchResponse.navigation.nextPage) {
+            //             //console.log(fetchResponse.navigation);
+            //             page++;
+            //             end++;
+            //         } else {
+            //             break;
+            //         }
+            //     } else {
+            //         break; // Exit loop if no records found
+            //     }
 
-                counter++;
-                // if (counter % 10 === 0) {
-                //     console.log('Sleeping for 30 seconds...');
-                //     await this.sleep(30000); // Sleep for 30 seconds
-                // }
-                console.log('Sleeping for 20 seconds...');
-                await this.sleep(20000);
+            //     counter++;
+            //     // if (counter % 10 === 0) {
+            //     //     console.log('Sleeping for 30 seconds...');
+            //     //     await this.sleep(30000); // Sleep for 30 seconds
+            //     // }
+            //     console.log('Sleeping for 20 seconds...');
+            //     await this.sleep(20000);
 
-            } while (page <= end);
+            // } while (page <= end);
 
             console.log('Data retrieval complete');
             return response.sendResponse(null, true, "Data retrieval complete!", 200);

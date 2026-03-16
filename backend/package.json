@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --exec \"node index.js\" --ext js --ignore tokens/*",
+    "start": "node index.js"
   },
   "author": "sk",
   "license": "ISC",
@@ -13,14 +14,28 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-form-data": "^2.0.23",
+    "googleapis": "^162.0.0",
+    "html-pdf": "^3.0.1",
+    "html-to-pdf": "^0.1.11",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.2",
     "knex": "^3.1.0",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.5.46",
     "node-cron": "^3.0.3",
-    "pg": "^8.13.1"
+    "node-html-to-pdf": "^1.0.3",
+    "nodemailer": "^7.0.6",
+    "nodemon": "^3.1.10",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.13.1",
+    "puppeteer": "^24.21.0",
+    "wkhtmltopdf": "^0.4.0",
+    "xero-node": "^13.0.0"
   }
 }

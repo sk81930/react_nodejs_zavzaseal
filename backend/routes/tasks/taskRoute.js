@@ -6,6 +6,16 @@ let taskController = new (require('../../controllers/taskController.js'))();
 
 
 
+router.get("/getTasksData", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.getTasksData(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
 
 router.get("/getTasks", Middleware.authenticate, (req, res, next) => {
   Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
@@ -27,6 +37,8 @@ router.get("/getTaskById/:taskId", Middleware.authenticate, (req, res, next) => 
       response.sendResponse([], false, err.message, 201);
    }
 });
+
+
 router.get("/getNotes/:taskId", Middleware.authenticate, (req, res, next) => {
   Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
 }, async (req,res) => { 
@@ -38,9 +50,20 @@ router.get("/getNotes/:taskId", Middleware.authenticate, (req, res, next) => {
    }
 });
 
+router.get("/getNotesByType/:taskId", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.getNotesByType(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
 
 router.post("/addTask", Middleware.authenticate, (req, res, next) => {
-  Middleware.hasRole(req, res, next, ['admin','super_admin']);
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
 }, async (req,res) => { 
    const response = new baseResponse(res);
    try {
@@ -50,12 +73,49 @@ router.post("/addTask", Middleware.authenticate, (req, res, next) => {
    }
 });
 
-router.post("/editTask/:taskId", Middleware.authenticate, (req, res, next) => {
+router.post("/createNote", Middleware.authenticate, (req, res, next) => {
   Middleware.hasRole(req, res, next, ['admin','super_admin']);
 }, async (req,res) => { 
    const response = new baseResponse(res);
    try {
+     let result = await taskController.createNote(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+router.post("/updateNote", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.updateNote(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+
+
+
+
+router.post("/editTask/:taskId", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
      let result = await taskController.editTask(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+router.post("/addComment/:taskId", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.addComment(req.session,req,res);
    } catch(err) {
       response.sendResponse([], false, err.message, 201);
    }
@@ -67,6 +127,28 @@ router.get("/getComments/:taskId", Middleware.authenticate, (req, res, next) => 
    const response = new baseResponse(res);
    try {
      let result = await taskController.getComments(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+router.post("/saveCrewAssignments/:taskId", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.saveCrewAssignments(req.session,req,res);
+   } catch(err) {
+      response.sendResponse([], false, err.message, 201);
+   }
+});
+
+router.get("/getTasksWithCrew", Middleware.authenticate, (req, res, next) => {
+  Middleware.hasRole(req, res, next, ['admin','super_admin','crew']);
+}, async (req,res) => { 
+   const response = new baseResponse(res);
+   try {
+     let result = await taskController.getTasksWithCrew(req.session,req,res);
    } catch(err) {
       response.sendResponse([], false, err.message, 201);
    }
